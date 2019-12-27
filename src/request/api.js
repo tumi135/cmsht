@@ -147,11 +147,29 @@ const api = {
       s: "App.Statistics.GetRegisterSnapshot"
     });
   },
-  //统计文章总数
+  //会员登录统计接口
+  getDailyLoginReport: (start_date, end_date) => {
+    return axios.post("/", {
+      s: "App.Statistics.GetDailyLoginReport",
+      end_date: end_date,
+      start_date: start_date
+    });
+  },
+  //获取单字段的每日统计报表
   getArticleSnapshot: () => {
     return axios.post("/", {
       s: "App.Table.Count",
       model_name: "yesapi_fl_article"
+    });
+  },
+  //统计文章总数
+  getArticleDailyDataReport: (days) => {
+    return axios.post("/", {
+      s: "App.Table.GetFiledDailyDataReport",
+      model_name: "yesapi_fl_article",
+      field: "id",
+      date_field: "add_time",
+      days: days
     });
   },
   //base64图片上传接口

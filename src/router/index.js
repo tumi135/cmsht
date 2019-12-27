@@ -2,30 +2,35 @@ import Vue from "vue";
 import store from "../store/index";
 
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+const Layout = () => import("../components/layout.vue");
+const Login = () => import("../views/login.vue");
+const Register = () => import("../views/register");
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: Home
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    path: "/blank",
+    name: "blankPage",
+    component: Layout,
+    children: [
+      {
+        path: "login",
+        name: "login",
+        component: Login
+      },
+      {
+        path: "register",
+        name: "register",
+        component: Register
+      }
+    ]
   }
 ];
 
 const router = new VueRouter({
   // mode: "history",
-  base: process.env.BASE_URL,
+  // base: process.env.BASE_URL,
   routes
 });
 
@@ -38,7 +43,9 @@ router.beforeEach((to, from, next) => {
     } else {
       next({
         path: "/login",
-        query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+        query: {
+          redirect: to.fullPath
+        } // 将跳转的路由path作为参数，登录成功后跳转到该路由
       });
     }
   } else {
