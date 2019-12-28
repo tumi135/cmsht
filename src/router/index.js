@@ -5,10 +5,16 @@ import VueRouter from "vue-router";
 const Layout = () => import("../components/layout.vue");
 const Login = () => import("../views/login.vue");
 const Register = () => import("../views/register");
+const Index = () => import("../views/index");
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/index",
+    name: "index",
+    component: Index
+  },
   {
     path: "/blank",
     name: "blankPage",

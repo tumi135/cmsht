@@ -144,13 +144,18 @@ h1 {
   position: fixed;
   right: 30px;
   top: 30px;
-  width: 300px;
+  width: 320px;
   padding: 20px;
   background: rgba(0, 0, 0, 0.5);
 }
-
 .wrapper_from_box {
   background: #ffffff;
-  height: 500px;
+}
+p {
+  font-size: 24px;
+  color: #000;
+  font-weight: 500;
+  text-align: center;
+  padding-top: 20px;
 }
 </style>
