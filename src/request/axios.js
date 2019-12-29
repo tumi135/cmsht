@@ -1,7 +1,7 @@
 import axios from "axios";
 import qs from "qs";
-import store from "../store/index";
-// import storages from "../my_config/storages"
+// import store from "../store/index";
+import storages from "../my_config/storages"
 
 // request拦截器
 axios.defaults.baseURL = "http://hn216.api.yesapi.cn";
@@ -10,16 +10,16 @@ axios.interceptors.request.use(
   config => {
     //在发送请求之前做些什么
     if (config.data.token) {
-      config.params.token = store.state.token;
+      config.data.token = storages.localGet('token');
     }
     if (config.data.uuid) {
-      config.params.uuid = store.state.uuid;
+      config.data.uuid = storages.localGet('uuid');
     }
     if (config.data.admin_token) {
-      config.params.admin_token = store.state.token;
+      config.data.token = storages.localGet('token');
     }
     if (config.data.admin_uuid) {
-      config.params.admin_uuid = store.state.uuid;
+      config.data.uuid = storages.localGet('uuid');
     }
     config.data = {
       ...config.data,

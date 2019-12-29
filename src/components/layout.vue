@@ -25,20 +25,11 @@ export default {
   }
 };
 </script>
-<style>
-/* html,
-body,
-#app,
-.layout {
-  height: 100%;
-  width: 100%;
-} */
-</style>
 <style scoped>
 @import "../assets/css/base.css";
 .bg {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   background: #ffffff;
   background-image: url("../assets/images/bg.jpg");
   background-repeat: no-repeat;

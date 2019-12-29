@@ -43,6 +43,8 @@
 
 <script>
 import api from "../request/api.js";
+import { mapMutations } from "vuex";
+// import storages from "../my_config/storages";
 export default {
   data() {
     return {
@@ -68,6 +70,7 @@ export default {
     this.getCaptchaInfo();
   },
   methods: {
+    ...mapMutations(["login"]),
     async getCaptchaInfo() {
       let captchaInfo = await api.captchaCreate();
       if (captchaInfo.ret == 200 && captchaInfo.data.err_code == 0) {
@@ -107,7 +110,12 @@ export default {
           message: "登录成功！",
           type: "success"
         });
-        this.$router.push({name:"index"})
+        this.login(loginInfo.data);
+        if (this.$route.query.redirect) {
+          this.$router.push(this.$route.query.redirect);
+        } else {
+          this.$router.push({ name: "index" });
+        }
       } else {
         this.alert = loginInfo.data.err_msg;
       }

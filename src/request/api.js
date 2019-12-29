@@ -60,10 +60,10 @@ const api = {
     });
   },
   //会员登录态检测接口
-  userCheck: uuid => {
+  userCheck: () => {
     return axios.post("/", {
       s: "App.User.Check",
-      uuid: uuid,
+      uuid: true,
       token: true
     });
   },
