@@ -23,10 +23,12 @@ const api = {
     const md5 = crypto.createHash("md5");
     md5.update(password);
     let md5password = md5.digest("hex");
+    let ext_info = JSON.stringify({"yesapi_avatar":"http://cd7.yesapi.net/C6FB2E902F9FDA74101B4887AF935333_20191229175409_e7ca1f115b39297a555329a8aa061e2c.jpeg"})
     return axios.post("/", {
       s: "App.User.Register",
       password: md5password,
-      username: username
+      username: username,
+      ext_info: ext_info
     });
   },
   //会员登录
