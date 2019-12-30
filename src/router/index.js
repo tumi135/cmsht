@@ -10,6 +10,8 @@ const Login = () => import("../views/login.vue");
 const Register = () => import("../views/register");
 const Index = () => import("../views/index");
 const Home = () => import("../views/home");
+const My = () => import("../views/my");
+const ChangePassword = () => import("../views/changePassword");
 
 Vue.use(VueRouter);
 
@@ -35,6 +37,24 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['首页']
+        }
+      },
+      {
+        path: "my",
+        name: "my",
+        component: My,
+        meta: {
+          requireAuth: true,
+          routerName: ['个人资料']
+        }
+      },
+      {
+        path: "changePassword",
+        name: "changePassword",
+        component: ChangePassword,
+        meta: {
+          requireAuth: true,
+          routerName: ['修改密码']
         }
       },
     ]

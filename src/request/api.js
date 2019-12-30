@@ -94,16 +94,18 @@ const api = {
     let md5oldpassword = md5.digest("hex");
     let md5newpassword = md5_2.digest("hex");
     return axios.post("/", {
-      s: "App.User.Login",
+      s: "App.User.AlterPassword",
+      username: username,
       new_password: md5newpassword,
       old_password: md5oldpassword
     });
   },
   //	修改会员扩展信息接口
-  userUpdateExtInfo: (avatar, sex) => {
+  userUpdateExtInfo: (avatar, sex, email) => {
     let ext_info = {
       yesapi_avatar: avatar,
-      yesapi_sex: sex
+      yesapi_sex: sex,
+      yesapi_email: email
     };
     ext_info = JSON.stringify(ext_info);
     return axios.post("/", {

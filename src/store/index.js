@@ -10,7 +10,8 @@ export default new Vuex.Store({
     token: null,
     uuid: null,
     username: null,
-    avatar: null
+    avatar: null,
+    userInfo: null
   },
   mutations: {
     login: (state, data) => {
@@ -18,6 +19,9 @@ export default new Vuex.Store({
       storages.localSet('uuid', data.uuid)
       state.token = data.token
       state.uuid = data.uuid
+    },
+    saveUserInfo: (state, data) => {
+      state.userInfo = data
     },
     logout: (state) => {
       storages.localRemove('token')
