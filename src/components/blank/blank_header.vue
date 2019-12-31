@@ -41,7 +41,6 @@
 
 <script>
 import Bus from "../../utils/bus";
-import api from "../../request/api.js";
 import { mapMutations } from "vuex";
 export default {
   name: "",
@@ -55,7 +54,7 @@ export default {
   },
   async created() {
     this.routerName = this.$route.meta.routerName;
-    let userInfo = await api.userProfile();
+    let userInfo = await this.$api.userProfile();
     if (userInfo.ret == 200 && userInfo.data.err_code == 0) {
       this.userName = userInfo.data.info.username;
       this.avatar = userInfo.data.info.ext_info.yesapi_avatar;

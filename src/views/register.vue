@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import api from "../request/api.js";
 export default {
   data() {
     var nameReg = /^[0-9a-zA-Z]{4,6}$/;
@@ -107,7 +106,7 @@ export default {
   },
   methods: {
     async getCaptchaInfo() {
-      let captchaInfo = await api.captchaCreate();
+      let captchaInfo = await this.$api.captchaCreate();
       if (captchaInfo.ret == 200 && captchaInfo.data.err_code == 0) {
         this.captcha_img = captchaInfo.data.captcha_img;
         this.captcha_id = captchaInfo.data.captcha_id;
@@ -118,7 +117,7 @@ export default {
       this.$refs.register_from.validate(async valid => {
         if (valid) {
           this.fullscreenLoading = true;
-          let captchaCheckInfo = await api.captchaVerify(
+          let captchaCheckInfo = await this.$api.captchaVerify(
             this.captcha_id,
             this.form.captcha_code
           );
@@ -135,8 +134,7 @@ export default {
       });
     },
     async goRrgister() {
-      let loginInfo = await api.userRegister(this.form.name, this.form.password);
-      console.log(loginInfo);
+      let loginInfo = await this.$api.userRegister(this.form.name, this.form.password);
       this.fullscreenLoading = false;
       if (loginInfo.ret == 200 && loginInfo.data.err_code == 0) {
         this.$message({
