@@ -8,62 +8,64 @@
           :auto-upload="false"
           :show-file-list="false"
           :on-change="changeAvatar"
-          :on-success="handleAvatarSuccess"
+          accept=".jpg, .jpeg, .png, .gif, .bmp, .pdf, .JPG, .JPEG, .PBG, .GIF, .BMP, .PDF"
         >
           <img v-if="myUserInfo.avatar" :src="myUserInfo.avatar" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="邮箱">
-        <el-input
-          v-model="myUserInfo.email"
-          :rules="[
-            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-            {
-              type: 'email',
-              message: '请输入正确的邮箱地址',
-              trigger: ['blur', 'change']
-            }
-          ]"
-        ></el-input>
+      <el-form-item
+        label="邮箱"
+        prop="email"
+        :rules="[
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
+        ]"
+      >
+        <el-input v-model="myUserInfo.email"></el-input>
       </el-form-item>
       <el-form-item label="性别">
-        <el-input v-model="myUserInfo.sex"></el-input>
+        <el-radio v-model="myUserInfo.sex" label="保密">保密</el-radio>
+        <el-radio v-model="myUserInfo.sex" label="男">男</el-radio>
+        <el-radio v-model="myUserInfo.sex" label="女">女</el-radio>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">修改</el-button>
-        <el-button>重置</el-button>
+        <el-button type="primary" @click="submitForm">修改</el-button>
+        <el-button @click="reSetFrom">重置</el-button>
       </el-form-item>
     </el-form>
     <el-dialog title="头像剪裁" width="500px" :visible.sync="dialogVisible" append-to-body>
       <div class="dialog-cropper-center">
         <div class="cropper-content">
-        <div class="cropper" >
-          <vueCropper
-            ref="cropper"
-            :img="option.img"
-            :outputSize="option.size"
-            :outputType="option.outputType"
-            :info="true"
-            :full="option.full"
-            :canMove="option.canMove"
-            :canMoveBox="option.canMoveBox"
-            :original="option.original"
-            :autoCrop="option.autoCrop"
-            :fixed="option.fixed"
-            :fixedNumber="option.fixedNumber"
-            :centerBox="option.centerBox"
-            :infoTrue="option.infoTrue"
-            :fixedBox="option.fixedBox"
-            @realTime="realTime"
-          ></vueCropper>
+          <div class="cropper">
+            <vueCropper
+              ref="cropper"
+              :img="option.img"
+              :outputSize="option.size"
+              :outputType="option.outputType"
+              :info="true"
+              :full="option.full"
+              :canMove="option.canMove"
+              :canMoveBox="option.canMoveBox"
+              :original="option.original"
+              :autoCrop="option.autoCrop"
+              :fixed="option.fixed"
+              :fixedNumber="option.fixedNumber"
+              :centerBox="option.centerBox"
+              :infoTrue="option.infoTrue"
+              :fixedBox="option.fixedBox"
+              @realTime="realTime"
+            ></vueCropper>
+          </div>
         </div>
-      </div>
-      <div :style="previewStyle" class="previewStyle">
-        <div :style="previews.div">
-          <img :src="previews.url" :style="previews.img" />
+        <div :style="previewStyle" class="previewStyle">
+          <div :style="previews.div">
+            <img :src="previews.url" :style="previews.img" />
+          </div>
         </div>
-      </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -117,16 +119,19 @@ export default {
   },
   created() {
     if (this.userInfo) {
-      this.myUserInfo.avatar = this.userInfo.ext_info.yesapi_avatar || "";
-      this.myUserInfo.email = this.userInfo.ext_info.yesapi_email || "";
-      this.myUserInfo.asex = this.userInfo.ext_info.yesapi_sex || "";
+      this.reSetFrom()
     }
   },
   methods: {
-    ...mapMutations(["saveUserInfo"]),
+    ...mapMutations(["saveUserextInfo"]),
+    reSetFrom() {
+      this.myUserInfo.avatar = this.userInfo.ext_info.yesapi_avatar || "";
+      this.myUserInfo.email = this.userInfo.ext_info.yesapi_email || "";
+      this.myUserInfo.sex = this.userInfo.ext_info.yesapi_sex || "";
+    },
     changeAvatar(file) {
-      const isLt5M = file.size / 1024 / 1024 < 1;
-      if (!isLt5M) {
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isLt1M) {
         this.$message.error("上传文件大小不能超过 1MB!");
         return false;
       }
@@ -135,13 +140,11 @@ export default {
       // 上传成功后将图片地址赋值给裁剪框显示图片
       this.$nextTick(() => {
         this.option.img = URL.createObjectURL(file.raw);
-        console.log(this.option.img);
         this.dialogVisible = true;
       });
     },
     // 实时预览函数
     realTime(data) {
-      console.log(data);
       this.previews = data;
 
       this.previewStyle = {
@@ -152,30 +155,44 @@ export default {
         zoom: 100 / data.w
       };
     },
-    handleAvatarSuccess(res, file) {
-      console.log(res, file);
-
-      // this.imageUrl = URL.createObjectURL(file.raw);
-    },
+    //获取base64格式截图
     finish() {
-      this.$refs.cropper.getCropBlob(data => {
-        console.log(data);
-        // var fileName = 'goods' + this.fileinfo.uid
-        // this.loading = true
-        //上传阿里云服务器
-        // client().put(fileName, data).then(result => {
-        //   this.dialogVisible = false
-        //   this.picsList.push(result.url)
-        // }).catch(err => {
-        //   console.log(err)
-        //   this.loading = false
-        // })
+      this.$refs.cropper.getCropData(async data => {
+        let newAvatar = await this.$api.uploadImgByBase64(data, "avatar");
+        if (newAvatar.ret == 200 && newAvatar.data.err_code == 0) {
+          this.dialogVisible = false;
+          this.myUserInfo.avatar = newAvatar.data.url;
+        } else {
+          this.$message({
+            message: "头像上传失败！",
+            type: "error"
+          });
+        }
       });
     },
     submitForm() {
-      this.$refs.myUserInfo.validate(valid => {
+      this.$refs.myUserInfo.validate(async valid => {
         if (valid) {
-          alert("submit!");
+          let userUpdateExtInfo = await this.$api.userUpdateExtInfo(
+            this.myUserInfo.avatar,
+            this.myUserInfo.sex,
+            this.myUserInfo.email
+          );
+          if (
+            userUpdateExtInfo.ret == 200 &&
+            userUpdateExtInfo.data.err_code == 0
+          ) {
+            this.$message({
+              message: "修改成功!",
+              type: "success"
+            });
+            this.saveUserextInfo(userUpdateExtInfo.data.ext_info);
+          } else {
+            this.$message({
+              message: "修改失败！",
+              type: "error"
+            });
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -185,12 +202,7 @@ export default {
   },
   watch: {
     userInfo() {
-      console.log("-----");
-      console.log(this.userInfo);
-      this.myUserInfo.avatar = this.userInfo.ext_info.yesapi_avatar || "";
-      this.myUserInfo.email = this.userInfo.ext_info.yesapi_email || "";
-      this.myUserInfo.sex = this.userInfo.ext_info.yesapi_sex || "";
-      console.log(this.myUserInfo.sex);
+      this.reSetFrom();
     }
   },
   computed: {
@@ -223,6 +235,9 @@ export default {
   height: 178px;
   display: block;
 }
+.el-input {
+  width: 300px;
+}
 .dialog-cropper-center {
   width: 100%;
   display: flex;
@@ -235,7 +250,7 @@ export default {
   height: 300px;
 }
 
-.previewStyle{
+.previewStyle {
   border-radius: 50%;
   display: inline-block;
   /* margin-left: 50px; */

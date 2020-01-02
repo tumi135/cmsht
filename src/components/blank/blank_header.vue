@@ -41,7 +41,7 @@
 
 <script>
 import Bus from "../../utils/bus";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "",
   data() {
@@ -56,8 +56,7 @@ export default {
     this.routerName = this.$route.meta.routerName;
     let userInfo = await this.$api.userProfile();
     if (userInfo.ret == 200 && userInfo.data.err_code == 0) {
-      this.userName = userInfo.data.info.username;
-      this.avatar = userInfo.data.info.ext_info.yesapi_avatar;
+      this.changeInfo(userInfo.data.info);
       this.saveUserInfo(userInfo.data.info);
     }
   },
@@ -70,12 +69,23 @@ export default {
     toLogout() {
       this.logout();
       this.$router.push("/layout/login");
+    },
+    changeInfo(data) {
+      this.userName = data.username;
+      this.avatar = data.ext_info.yesapi_avatar;
     }
   },
   watch: {
     $route() {
       this.routerName = this.$route.meta.routerName;
+    },
+    //监听用户信息
+    userInfo(v) {
+      this.changeInfo(v);
     }
+  },
+  computed: {
+    ...mapState(["userInfo"])
   }
 };
 </script>

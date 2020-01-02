@@ -37,6 +37,7 @@ axios.interceptors.request.use(
   error => {
     // Do something with request error
     console.error(error); // for debug
+    console.error("error")
     return Promise.reject(error);
   }
 );

@@ -23,6 +23,11 @@ export default new Vuex.Store({
     saveUserInfo: (state, data) => {
       state.userInfo = data
     },
+    saveUserextInfo: (state, data) => {
+      let oldState = JSON.parse(JSON.stringify(state.userInfo));
+      oldState.ext_info = data;
+      state.userInfo = oldState;
+    },
     logout: (state) => {
       storages.localRemove('token')
       storages.localRemove('uuid')
