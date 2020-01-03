@@ -12,6 +12,7 @@ const Index = () => import("../views/index");
 const Home = () => import("../views/home");
 const My = () => import("../views/my");
 const ChangePassword = () => import("../views/changePassword");
+const Banner = () => import("../views/banner");
 
 Vue.use(VueRouter);
 
@@ -55,6 +56,15 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['修改密码']
+        }
+      },
+      {
+        path: "banner",
+        name: "banner",
+        component: Banner,
+        meta: {
+          requireAuth: true,
+          routerName: ['系统设置', '轮播图']
         }
       },
     ]
