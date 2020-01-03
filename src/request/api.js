@@ -138,7 +138,12 @@ const api = {
     });
   },
   //会员注册统计接口
-  getDailyRegister: (start_date, end_date) => {
+  getDailyRegister: () => {
+    var date1 = new Date();
+    var date2 = new Date(date1);
+    let end_date = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate();
+    date2.setDate(date1.getDate() - 6);
+    let start_date = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
     return axios.post("/", {
       s: "App.Statistics.GetDailyRegister",
       end_date: end_date,
@@ -152,28 +157,33 @@ const api = {
     });
   },
   //会员登录统计接口
-  getDailyLoginReport: (start_date, end_date) => {
+  getDailyLoginReport: () => {
+    var date1 = new Date();
+    var date2 = new Date(date1);
+    let end_date = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate();
+    date2.setDate(date1.getDate() - 6);
+    let start_date = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
     return axios.post("/", {
       s: "App.Statistics.GetDailyLoginReport",
       end_date: end_date,
       start_date: start_date
     });
   },
-  //获取单字段的每日统计报表
+  //统计文章总数
   getArticleSnapshot: () => {
     return axios.post("/", {
       s: "App.Table.Count",
       model_name: "yesapi_fl_article"
     });
   },
-  //统计文章总数
-  getArticleDailyDataReport: (days) => {
+  //获取单字段的每日统计报表
+  getArticleDailyDataReport: () => {
     return axios.post("/", {
       s: "App.Table.GetFiledDailyDataReport",
       model_name: "yesapi_fl_article",
       field: "id",
       date_field: "add_time",
-      days: days
+      days: 7
     });
   },
   //base64图片上传接口
