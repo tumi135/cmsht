@@ -24,7 +24,12 @@
       ></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="changePassword('ruleForm')">提交</el-button>
+      <el-button
+        type="primary"
+        @click="changePassword('ruleForm')"
+        v-loading.fullscreen.lock="fullscreenLoading"
+        >提交</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
@@ -54,18 +59,22 @@ export default {
         newPassword: [
           { required: true, validator: passwordValidator, trigger: "blur" }
         ]
-      }
+      },
+      fullscreenLoading: false
     };
   },
   methods: {
     changePassword() {
       this.$refs.ruleForm.validate(async valid => {
         if (valid) {
+          this.fullscreenLoading = true;
           let changeInfo = await this.$api.alterPassword(
             this.$store.state.userInfo.username,
             this.ruleForm.oldPassword,
             this.ruleForm.newPassword
-          );
+          ).catch(err => {
+            return err
+          });;
           if (changeInfo.ret == 200 && changeInfo.data.err_code == 0) {
             this.$store.commit("logout");
             this.$message({
@@ -79,6 +88,7 @@ export default {
               type: "error"
             });
           }
+          this.fullscreenLoading = false;
         } else {
           return false;
         }

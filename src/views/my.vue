@@ -69,7 +69,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="finish" :loading="loading">确认</el-button>
+        <el-button type="primary" @click="finish" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -82,6 +82,7 @@ import { VueCropper } from "vue-cropper";
 export default {
   data() {
     return {
+      fullscreenLoading: false,
       myUserInfo: {
         avatar: "",
         email: "",
@@ -109,9 +110,8 @@ export default {
         infoTrue: true // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
       },
       previewStyle: {},
-      picsList: [], //页面显示的数组
+      picsList: [] //页面显示的数组
       // 防止重复提交
-      loading: false
     };
   },
   components: {
@@ -119,7 +119,7 @@ export default {
   },
   created() {
     if (this.userInfo) {
-      this.reSetFrom()
+      this.reSetFrom();
     }
   },
   methods: {
@@ -130,9 +130,9 @@ export default {
       this.myUserInfo.sex = this.userInfo.ext_info.yesapi_sex || "";
     },
     changeAvatar(file) {
-      const isLt1M = file.size / 1024 / 1024 < 1;
+      const isLt1M = file.size / 1024 / 1024 / 2 < 1;
       if (!isLt1M) {
-        this.$message.error("上传文件大小不能超过 1MB!");
+        this.$message.error("上传文件大小不能超过 500k!");
         return false;
       }
       this.fileinfo = file;
@@ -158,26 +158,36 @@ export default {
     //获取base64格式截图
     finish() {
       this.$refs.cropper.getCropData(async data => {
-        let newAvatar = await this.$api.uploadImgByBase64(data, "avatar");
+        this.fullscreenLoading = true;
+        let newAvatar = await this.$api
+          .uploadImgByBase64(data, "avatar")
+          .catch(err => {
+            return err
+          });
         if (newAvatar.ret == 200 && newAvatar.data.err_code == 0) {
           this.dialogVisible = false;
           this.myUserInfo.avatar = newAvatar.data.url;
         } else {
           this.$message({
-            message: "头像上传失败！",
+            message: "头像修改失败,刷新或换图片！",
             type: "error"
           });
         }
+        this.fullscreenLoading = false;
       });
     },
     submitForm() {
       this.$refs.myUserInfo.validate(async valid => {
         if (valid) {
+          this.fullscreenLoading = true;
           let userUpdateExtInfo = await this.$api.userUpdateExtInfo(
             this.myUserInfo.avatar,
             this.myUserInfo.sex,
             this.myUserInfo.email
-          );
+          ).catch(err => {
+            return err
+          });
+
           if (
             userUpdateExtInfo.ret == 200 &&
             userUpdateExtInfo.data.err_code == 0
@@ -193,8 +203,8 @@ export default {
               type: "error"
             });
           }
+          this.fullscreenLoading = false;
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

@@ -12,7 +12,7 @@
         <el-input v-model="form.name" placeholder="请输入4-8位字母或数字"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" show-password  placeholder="请输入6-12位小写字母或数字"></el-input>
+        <el-input v-model="form.password" show-password placeholder="请输入6-12位小写字母或数字"></el-input>
       </el-form-item>
       <el-form-item label="确认密码" prop="checkPassword">
         <el-input v-model="form.checkPassword" show-password></el-input>
@@ -51,28 +51,28 @@ export default {
     var passwordReg = /^[0-9a-z]{6,12}$/;
     var nameValidator = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('请输入账号!'))
+        return callback(new Error("请输入账号!"));
       }
       if (!nameReg.test(value)) {
-        return callback(new Error('账号格式不对!'))
+        return callback(new Error("账号格式不对!"));
       }
       callback();
     };
     var passwordValidator = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('请输入密码!'))
+        return callback(new Error("请输入密码!"));
       }
       if (!passwordReg.test(value)) {
-        return callback(new Error('密码格式不对!!'))
+        return callback(new Error("密码格式不对!!"));
       }
       callback();
     };
     var checkPasswordValidator = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('请输入密码!'))
+        return callback(new Error("请输入密码!"));
       }
       if (value !== this.form.password) {
-        return callback(new Error('两次输入密码不一致!'))
+        return callback(new Error("两次输入密码不一致!"));
       }
       callback();
     };
@@ -106,7 +106,12 @@ export default {
   },
   methods: {
     async getCaptchaInfo() {
-      let captchaInfo = await this.$api.captchaCreate();
+      let captchaInfo = await this.$api.captchaCreate().catch(() => {
+        this.$message({
+          message: "验证码获取失败！",
+          type: "error"
+        });
+      });
       if (captchaInfo.ret == 200 && captchaInfo.data.err_code == 0) {
         this.captcha_img = captchaInfo.data.captcha_img;
         this.captcha_id = captchaInfo.data.captcha_id;
@@ -117,10 +122,14 @@ export default {
       this.$refs.register_from.validate(async valid => {
         if (valid) {
           this.fullscreenLoading = true;
-          let captchaCheckInfo = await this.$api.captchaVerify(
-            this.captcha_id,
-            this.form.captcha_code
-          );
+          let captchaCheckInfo = await this.$api
+            .captchaVerify(this.captcha_id, this.form.captcha_code)
+            .catch(() => {
+              this.$message({
+                message: "注册失败！",
+                type: "error"
+              });
+            });
           if (
             captchaCheckInfo.ret == 200 &&
             captchaCheckInfo.data.err_code == 0
@@ -134,14 +143,21 @@ export default {
       });
     },
     async goRrgister() {
-      let loginInfo = await this.$api.userRegister(this.form.name, this.form.password);
+      let loginInfo = await this.$api
+        .userRegister(this.form.name, this.form.password)
+        .catch(() => {
+          this.$message({
+            message: "注册失败！",
+            type: "error"
+          });
+        });
       this.fullscreenLoading = false;
       if (loginInfo.ret == 200 && loginInfo.data.err_code == 0) {
         this.$message({
           message: "注册成功！",
           type: "success"
         });
-        this.$router.push({name:"login"})
+        this.$router.push({ name: "login" });
       } else {
         this.alert = loginInfo.data.err_msg;
       }

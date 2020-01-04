@@ -28,14 +28,17 @@
           @click="checkChaInfo"
           v-loading.fullscreen.lock="fullscreenLoading"
           element-loading-text="拼命加载中"
-        >登录</el-button>
+          >登录</el-button
+        >
       </el-form-item>
     </el-form>
     <div class="from_tips">
-      <div class="my_login_error" v-show="alert">{{alert}}</div>
+      <div class="my_login_error" v-show="alert">{{ alert }}</div>
       <p>
         还没账号？
-        <router-link class="go_register" :to="{ name: 'register' }">注册</router-link>
+        <router-link class="go_register" :to="{ name: 'register' }"
+          >注册</router-link
+        >
       </p>
     </div>
   </div>
@@ -71,28 +74,36 @@ export default {
   methods: {
     ...mapMutations(["login"]),
     async getCaptchaInfo() {
-      let captchaInfo = await this.$api.captchaCreate();
+      let captchaInfo = await this.$api.captchaCreate().catch(() => {
+        this.$message({
+          message: "验证码获取失败！",
+          type: "error"
+        });
+      });
       if (captchaInfo.ret == 200 && captchaInfo.data.err_code == 0) {
         this.captcha_img = captchaInfo.data.captcha_img;
         this.captcha_id = captchaInfo.data.captcha_id;
       }
-      console.log(captchaInfo);
     },
+    //检验验证码，正确则发送登录
     checkChaInfo() {
       this.alert = "";
       this.$refs.login_from.validate(async valid => {
         if (valid) {
           this.fullscreenLoading = true;
-          let captchaCheckInfo = await this.$api.captchaVerify(
-            this.captcha_id,
-            this.form.captcha_code
-          );
-          console.log(captchaCheckInfo);
+          let captchaCheckInfo = await this.$api
+            .captchaVerify(this.captcha_id, this.form.captcha_code)
+            .catch(() => {
+              return "网络错误";
+            });
           if (
             captchaCheckInfo.ret == 200 &&
             captchaCheckInfo.data.err_code == 0
           ) {
             this.goLogin();
+          } else if (captchaCheckInfo == "网络错误") {
+            this.fullscreenLoading = false;
+            this.alert = captchaCheckInfo;
           } else {
             this.fullscreenLoading = false;
             this.alert = captchaCheckInfo.data.err_msg;
@@ -101,8 +112,11 @@ export default {
       });
     },
     async goLogin() {
-      let loginInfo = await this.$api.userLogin(this.form.name, this.form.password);
-      console.log(loginInfo);
+      let loginInfo = await this.$api
+        .userLogin(this.form.name, this.form.password)
+        .catch(() => {
+          return "网络错误";
+        });
       this.fullscreenLoading = false;
       if (loginInfo.ret == 200 && loginInfo.data.err_code == 0) {
         this.$message({
@@ -115,6 +129,8 @@ export default {
         } else {
           this.$router.push({ name: "index" });
         }
+      } else if (loginInfo == "网络错误") {
+        this.alert = loginInfo;
       } else {
         this.alert = loginInfo.data.err_msg;
       }

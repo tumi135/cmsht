@@ -69,19 +69,16 @@ export default {
           {
             name: "用户注册",
             type: "line",
-            stack: "总量",
             data: this.echartInfo.dailyRegister,
           },
           {
             name: "用户登录",
             type: "line",
-            stack: "总量",
             data: this.echartInfo.dailyLogin
           },
           {
             name: "新增文章",
             type: "line",
-            stack: "总量",
             data: this.echartInfo.dailyArticle
           }
         ]
