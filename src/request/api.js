@@ -328,6 +328,7 @@ const api = {
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
     }
+    console.log(where)
     return axios.post("/", {
       s: "App.Table.FreeDelete",
       model_name: "yesapi_fl_slide",
