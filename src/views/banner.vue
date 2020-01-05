@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除轮播图</el-button>
-      <el-button type="primary" icon="el-icon-edit">创建轮播图</el-button>
+      <el-button type="primary" icon="el-icon-edit" @click="createDialog=true">创建轮播图</el-button>
     </div>
     <el-table
       :data="tableData"
@@ -10,10 +10,7 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="expand" label="更多">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -47,11 +44,24 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete('one', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 编辑窗口 -->
+    <change-orcreate-banner
+      type="change"
+      :dialog-form-visible="changeDialog"
+      @closeDialog="closeDialogs"
+      :info="changeInfo"
+    />
+    <!--创建窗口-->
+    <change-orcreate-banner
+      type="create"
+      :dialog-form-visible="createDialog"
+      @closeDialog="closeDialogs"
+    />
   </div>
 </template>
 
@@ -62,7 +72,10 @@ export default {
       tableData: [],
       page: 1,
       perpage: 10,
-      selectList: []
+      selectList: [],
+      changeDialog: false,
+      createDialog: false,
+      changeInfo: {}
     };
   },
   created() {
@@ -93,23 +106,36 @@ export default {
         carouselImgOnlineChange.ret == 200 &&
         carouselImgOnlineChange.data.err_code == 0
       ) {
-        this.$set(this.tableData[index], 'online', nowOnline);
+        this.$set(this.tableData[index], "online", nowOnline);
       }
-      console.log(carouselImgOnlineChange);
     },
-    handleSelectionChange(selection){
-      console.log(selection)
+    //获取选中的选项
+    handleSelectionChange(selection) {
       this.selectList = selection.map(item => {
-        return item.id
-      })
+        return item.id;
+      });
     },
-    handleEdit() {},
+    //打开dialogs，方便进行编辑
+    handleEdit(val) {
+      this.changeDialog = true
+      this.changeInfo = val
+      console.log(val)
+    },
+    //关闭DIALOG
+    closeDialogs(val) {
+      if (val == "change") {
+        this.changeDialog = false;
+      } else if (val == "create") {
+        this.createDialog = false;
+      }
+    },
+    //删除选中的
     async handleDelete(type, deleteId) {
-      var deletes = []
-      if(type === 'one'){
-        deletes.push(deleteId.id)
-      }else if (type === 'more') {
-        deletes = this.selectList
+      var deletes = [];
+      if (type === "one") {
+        deletes.push(deleteId.id);
+      } else if (type === "more") {
+        deletes = this.selectList;
       }
       let deleteCarouselImg = await this.$api
         .deleteCarouselImg(...deletes)
@@ -122,9 +148,13 @@ export default {
         deleteCarouselImg.ret == 200 &&
         deleteCarouselImg.data.err_code == 0
       ) {
-        this.$router.go(0)
-      }  
+        this.$router.go(0);
+      }
     }
+  },
+  components: {
+    changeOrcreateBanner: () =>
+      import("../components/banner/changeOrcreateBanner")
   }
 };
 </script>

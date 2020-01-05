@@ -263,7 +263,7 @@ const api = {
     });
   },
   //创建轮播图
-  createCarouselImg: (title, group_id, pic, url, create_by, online) => {
+  createCarouselImg: (title, group_id, pic, url, online, create_by) => {
     let data = {
       uuid: store.state.uuid,
       title: title,
@@ -273,12 +273,32 @@ const api = {
       create_by: create_by,
       online: online
     };
+    console.log(data)
     data = JSON.stringify(data);
     return axios.post("/", {
       s: "App.Table.CheckCreateOrUpdate",
       model_name: "yesapi_fl_slide",
       data: data,
-      check_field: "img"
+      check_field: "pic"
+    });
+  },
+  //修改轮播图
+  updateCarouselImg: (id, title, group_id, pic, url, online) => {
+    let data = {
+      title: title,
+      group_id: group_id,
+      pic: pic,
+      url: url,
+      online: online
+    };
+    data = JSON.stringify(data);
+
+    return axios.post("/", {
+      s: "App.Table.Update",
+      model_name: "yesapi_fl_slide",
+      data: data,
+      check_field: "img",
+      id: id
     });
   },
   //轮播图获取总数

@@ -3,15 +3,15 @@
     <el-form label-width="80px" :model="myUserInfo" ref="myUserInfo">
       <el-form-item label="头像">
         <el-upload
-          class="avatar-uploader"
+          class="my-uploader"
           action
           :auto-upload="false"
           :show-file-list="false"
           :on-change="changeAvatar"
           accept=".jpg, .jpeg, .png, .gif, .bmp, .pdf, .JPG, .JPEG, .PBG, .GIF, .BMP, .PDF"
         >
-          <img v-if="myUserInfo.avatar" :src="myUserInfo.avatar" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <img v-if="myUserInfo.avatar" :src="myUserInfo.avatar" class="uploaderImg" />
+          <i v-else class="el-icon-plus my-uploader-icon"></i>
         </el-upload>
       </el-form-item>
       <el-form-item
@@ -37,7 +37,7 @@
         <el-button @click="reSetFrom">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog title="头像剪裁" width="500px" :visible.sync="dialogVisible" append-to-body>
+    <el-dialog title="头像剪裁" width="500px" :visible.sync="dialogVisible" append-to-body :close-on-click-modal="false">
       <div class="dialog-cropper-center">
         <div class="cropper-content">
           <div class="cropper">
@@ -222,29 +222,8 @@ export default {
 </script>
 
 <style scoped>
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
+@import "../assets/css/base.css";
+
 .el-input {
   width: 300px;
 }
