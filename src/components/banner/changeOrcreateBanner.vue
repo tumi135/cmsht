@@ -143,6 +143,7 @@ export default {
               message: "操作成功!",
               type: "success"
             });
+            this.$router.go(0);
           } else {
             this.$message({
               message: "操作失败！",
@@ -156,9 +157,10 @@ export default {
       });
     },
     async submitChange() {
-            let online = this.form.online? 0: 1;
+      let online = this.form.online ? 0 : 1;
       let res = await this.$api
         .updateCarouselImg(
+          this.id,
           this.form.title,
           this.form.group,
           this.form.pic,
@@ -171,7 +173,7 @@ export default {
       return res;
     },
     async submitCreate() {
-      let online = this.form.online? 0: 1;
+      let online = this.form.online ? 0 : 1;
       let res = await this.$api
         .createCarouselImg(
           this.form.title,
@@ -195,6 +197,7 @@ export default {
   watch: {
     info() {
       this.id = this.info.id;
+      console.log(this.id)
       this.form = {
         title: this.info.title,
         group: this.info.group_id,

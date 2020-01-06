@@ -297,7 +297,6 @@ const api = {
       s: "App.Table.Update",
       model_name: "yesapi_fl_slide",
       data: data,
-      check_field: "img",
       id: id
     });
   },

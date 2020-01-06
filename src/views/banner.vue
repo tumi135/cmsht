@@ -33,7 +33,11 @@
           <img :src="scope.row.pic" class="banner-item" />
         </template>
       </el-table-column>
-      <el-table-column prop="group_id" label="分组" width="120"></el-table-column>
+      <el-table-column label="分组" width="120">
+        <template slot-scope="scope">
+          <span>{{groupOptions[scope.row.group_id].label}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="group_id" label="当前状态" width="120">
         <template slot-scope="scope">
           <el-tag
@@ -75,7 +79,21 @@ export default {
       selectList: [],
       changeDialog: false,
       createDialog: false,
-      changeInfo: {}
+      changeInfo: {},
+      groupOptions: [
+        {
+          label: "首页",
+          value: 0
+        },
+        {
+          label: "发现",
+          value: 1
+        },
+        {
+          label: "我的",
+          value: 2
+        }
+      ]
     };
   },
   created() {
@@ -152,6 +170,11 @@ export default {
       }
     }
   },
+  filters: {
+  capitalize: function (value) {
+    return this.groupOptions[value].label
+  }
+},
   components: {
     changeOrcreateBanner: () =>
       import("../components/banner/changeOrcreateBanner")
