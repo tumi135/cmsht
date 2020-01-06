@@ -7,10 +7,10 @@
     :close-on-click-modal="false"
   >
     <el-form :model="form" label-width="80px" ref="form" :rules="formRules">
-      <el-form-item label="标题">
-        <el-input v-model="form.title"></el-input>
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="form.title" maxlength="20" show-word-limit></el-input>
       </el-form-item>
-      <el-form-item label="活动区域">
+      <el-form-item label="分组">
         <el-select v-model="form.group" placeholder="请选择">
           <el-option
             v-for="item in groupOptions"
@@ -20,7 +20,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="上传图片">
+      <el-form-item label="上传图片" prop="pic">
         <el-upload
           ref="upload"
           class="my-uploader"
@@ -70,7 +70,14 @@ export default {
         url: "",
         online: true
       },
-      formRules: {},
+      formRules: {
+        title:[
+            { required: true, message: '请填写标题', trigger: 'blur' }
+          ],
+        pic: [
+            { required: true, message: '请上传图片', trigger: 'blur' }
+          ]
+      },
       groupOptions: [
         {
           label: "首页",

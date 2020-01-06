@@ -313,10 +313,10 @@ const api = {
     if (title) {
       where.push("title=" + title);
     }
-    if (group_id) {
+    if (group_id || group_id == 0) {
       where.push("group_id=" + group_id);
     }
-    if (online) {
+    if (online || online == 0) {
       where.push("online=" + online);
     }
     return axios.post("/", {

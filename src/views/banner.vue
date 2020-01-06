@@ -1,14 +1,55 @@
 <template>
-  <div>
-    <div class="header">
+  <div v-loading.fullscreen.lock="fullscreenLoading">
+    <div class="search-box">
+      <el-form :inline="true" :model="searchform" class="demo-form-inline">
+        <el-form-item>
+          <el-input
+            v-model="searchform.title"
+            placeholder="标题"
+            maxlength="20"
+            show-word-limit
+            class="searchTitle"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-select placeholder="分组" v-model="searchform.group" class="my-select" clearable>
+            <el-option
+              class="my-select"
+              v-for="item in groupOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select placeholder="当前状态" v-model="searchform.online" class="my-select" clearable>
+            <el-option
+              class="my-select"
+              v-for="item in onlineOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSearch">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="control-btn-box">
       <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除轮播图</el-button>
-      <el-button type="primary" icon="el-icon-edit" @click="createDialog=true">创建轮播图</el-button>
+      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建轮播图</el-button>
     </div>
     <el-table
+      class="content"
       :data="tableData"
       stripe
       style="width: 100%"
       @selection-change="handleSelectionChange"
+      :cell-style="cellsClass"
+      :header-cell-style="cellsClass"
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="expand" label="更多">
@@ -66,16 +107,31 @@
       :dialog-form-visible="createDialog"
       @closeDialog="closeDialogs"
     />
+    <el-pagination
+      layout="prev, pager, next, jumper"
+      background
+      :page-size="pageSize"
+      :total="total"
+      @current-change="handleCurrentChange"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
+import { tableMixins } from "../mixins/table";
 export default {
   data() {
     return {
+      searchform: {
+        title: null,
+        group: null,
+        online: null
+      },
+      fullscreenLoading: false,
       tableData: [],
       page: 1,
-      perpage: 10,
+      pageSize: 10,
+      total: 0,
       selectList: [],
       changeDialog: false,
       createDialog: false,
@@ -93,22 +149,50 @@ export default {
           label: "我的",
           value: 2
         }
+      ],
+      onlineOptions: [
+        {
+          label: "上架中",
+          value: 0
+        },
+        {
+          label: "下架中",
+          value: 1
+        }
       ]
     };
   },
+  mixins: [tableMixins],
   created() {
     this.initData();
   },
   methods: {
     async initData() {
+      this.fullscreenLoading = true;
+      let group =
+        [0, 1, 2].indexOf(this.searchform.group) >= 0
+          ? this.searchform.group
+          : null;
+      let online =
+        [0, 1].indexOf(this.searchform.online) >= 0
+          ? this.searchform.online
+          : null;
       let datas = await this.$api
-        .carouselImgFreeQuery(this.page, this.perpage)
+        .carouselImgFreeQuery(
+          this.page,
+          this.pageSize,
+          this.searchform.title,
+          group,
+          online
+        )
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
           return "";
         });
       this.tableData = datas.data.list || [];
+      this.total = datas.data.total;
+      this.fullscreenLoading = false;
     },
     //改变上下架
     async changeOnline(index, info) {
@@ -135,9 +219,8 @@ export default {
     },
     //打开dialogs，方便进行编辑
     handleEdit(val) {
-      this.changeDialog = true
-      this.changeInfo = val
-      console.log(val)
+      this.changeDialog = true;
+      this.changeInfo = val;
     },
     //关闭DIALOG
     closeDialogs(val) {
@@ -155,6 +238,11 @@ export default {
       } else if (type === "more") {
         deletes = this.selectList;
       }
+      if (deletes.length === 0) {
+        this.$message.error("请选择删除的轮播图");
+        return false;
+      }
+
       let deleteCarouselImg = await this.$api
         .deleteCarouselImg(...deletes)
         .catch(err => {
@@ -168,21 +256,35 @@ export default {
       ) {
         this.$router.go(0);
       }
+    },
+    //查询
+    onSearch() {
+      this.page = 1;
+      this.initData();
     }
   },
-  filters: {
-  capitalize: function (value) {
-    return this.groupOptions[value].label
-  }
-},
   components: {
     changeOrcreateBanner: () =>
       import("../components/banner/changeOrcreateBanner")
   }
 };
 </script>
+<style>
+/* .my-cells>.cell{
+  text-align: center;
+} */
+</style>
 
 <style scoped>
+.searchTitle {
+  width: 300px;
+}
+.my-select {
+  width: 120px;
+}
+.content {
+  margin: 20px 0;
+}
 .demo-table-expand {
   font-size: 0;
 }
