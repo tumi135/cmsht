@@ -2,7 +2,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import storages from '../my_config/storages'
 
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -11,7 +10,8 @@ export default new Vuex.Store({
     uuid: null,
     username: null,
     avatar: null,
-    userInfo: null
+    userInfo: null,
+    login: false
   },
   mutations: {
     login: (state, data) => {
@@ -19,9 +19,11 @@ export default new Vuex.Store({
       storages.localSet('uuid', data.uuid)
       state.token = data.token
       state.uuid = data.uuid
+      state.login = true
     },
     saveUserInfo: (state, data) => {
       state.userInfo = data
+      state.login = true
     },
     saveUserextInfo: (state, data) => {
       let oldState = JSON.parse(JSON.stringify(state.userInfo));
@@ -33,6 +35,8 @@ export default new Vuex.Store({
       storages.localRemove('uuid')
       state.token = null
       state.uuid = null
+      state.login = false
+
     }
   },
   actions: {},

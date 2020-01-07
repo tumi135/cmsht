@@ -13,6 +13,7 @@ const Home = () => import("../views/home");
 const My = () => import("../views/my");
 const ChangePassword = () => import("../views/changePassword");
 const Banner = () => import("../views/banner");
+const FunnyImg = () => import("../views/funnyImg");
 
 Vue.use(VueRouter);
 
@@ -67,6 +68,15 @@ const routes = [
           routerName: ['系统设置', '轮播图']
         }
       },
+      {
+        path: "funnyImg",
+        name: "funnyImg",
+        component: FunnyImg,
+        meta: {
+          requireAuth: true,
+          routerName: ['系统设置', '趣图']
+        }
+      }
     ]
   },
   {
