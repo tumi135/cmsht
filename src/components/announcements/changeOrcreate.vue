@@ -1,6 +1,6 @@
-<template class="changeOrcreateBanner">
+<template class="changeOrcreate">
   <el-dialog
-    :title="type == 'change' ? '编辑轮播图' : '创建轮播图'"
+    :title="type == 'change' ? '编辑公告' : '创建公告'"
     :visible.sync="dialogFormVisible"
     destroy-on-close
     :before-close="closeDialog"
@@ -10,32 +10,25 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title" maxlength="20" show-word-limit></el-input>
       </el-form-item>
-      <el-form-item label="分组">
-        <el-select v-model="form.group" placeholder="请选择">
-          <el-option
-            v-for="item in groupOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+      <el-form-item label="起始时间">
+        <el-date-picker
+          v-model="form.date"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </el-form-item>
-      <el-form-item label="上传图片" prop="pic">
-        <el-upload
-          ref="upload"
-          class="my-uploader"
-          action
-          :auto-upload="false"
-          :show-file-list="false"
-          :on-change="uploaderImg"
-          accept=".jpg, .jpeg, .png, .gif, .bmp, .pdf, .JPG, .JPEG, .PBG, .GIF, .BMP, .PDF"
-        >
-          <img v-if="form.pic" :src="form.pic" class="uploaderImg" />
-          <i v-else class="el-icon-plus my-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="链接">
-        <el-input v-model="form.url"></el-input>
+      <el-form-item label="内容" prop="content">
+        <el-input
+          type="textarea"
+          :rows="5"
+          clearable
+          placeholder="请输入内容"
+          maxlength="300"
+          show-word-limit
+          v-model="form.content"
+        ></el-input>
       </el-form-item>
       <el-form-item label="上架">
         <el-switch v-model="form.online" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
@@ -65,66 +58,20 @@ export default {
       id: "",
       form: {
         title: "",
-        group: 0,
-        pic: "",
-        url: "",
+        date: "",
+        content: "",
         online: true
       },
       formRules: {
-        title:[
-            { required: true, message: '请填写标题', trigger: 'blur' }
-          ],
-        pic: [
-            { required: true, message: '请上传图片', trigger: 'blur' }
-          ]
-      },
-      groupOptions: [
-        {
-          label: "首页",
-          value: 0
-        },
-        {
-          label: "发现",
-          value: 1
-        },
-        {
-          label: "我的",
-          value: 2
-        }
-      ]
+        title: [{ required: true, message: "请填写标题", trigger: "blur" }],
+        content: [{ required: true, message: "请填写内容", trigger: "blur" }]
+      }
     };
   },
   created() {
     // console.log(this.type);
   },
   methods: {
-    //上传本地图片
-    async uploaderImg(file) {
-      const isLt1M = file.size / 1024 / 1024 / 2 < 1;
-      let reader = new FileReader(); //html5读文件
-      let that = this;
-      if (!isLt1M) {
-        this.$message.error("上传文件大小不能超过 500k!");
-        return false;
-      }
-      reader.readAsDataURL(file.raw); //转BASE64
-      reader.onload = async function() {
-        //读取完毕后调用接口
-        let banner = await that.$api
-          .uploadImgByBase64(reader.result, "banner")
-          .catch(err => {
-            return err;
-          });
-        if (banner.ret == 200 && banner.data.err_code == 0) {
-          that.form.pic = banner.data.url;
-        } else {
-          that.$message({
-            message: "图片上传失败,刷新或换图片！",
-            type: "error"
-          });
-        }
-      };
-    },
     async submitForm() {
       this.$refs.form.validate(async valid => {
         if (valid) {
@@ -139,7 +86,7 @@ export default {
               message: "操作失败！",
               type: "error"
             });
-            return false
+            return false;
           }
           if (res.ret == 200 && res.data.err_code == 0) {
             this.$message({
@@ -149,7 +96,7 @@ export default {
             this.$router.go(0);
           } else {
             this.$message({
-              message: "操作失败！",
+              message: "网络错误，操作失败！",
               type: "error"
             });
           }
@@ -160,15 +107,23 @@ export default {
       });
     },
     async submitChange() {
+      var strTime, endTime;
+      if (this.form.date) {
+        strTime = this.formatDate(this.form.date[0]);
+        endTime = this.formatDate(this.form.date[1]);
+      } else {
+        strTime = null;
+        endTime = null;
+      }
       let online = this.form.online ? 0 : 1;
       let res = await this.$api
-        .updateCarouselImg(
+        .announcementsChange(
           this.id,
           this.form.title,
-          this.form.group,
-          this.form.pic,
-          this.form.url,
-          online
+          this.form.content,
+          online,
+          strTime,
+          endTime
         )
         .catch(err => {
           return err;
@@ -176,34 +131,53 @@ export default {
       return res;
     },
     async submitCreate() {
+      var strTime, endTime;
+      if (this.form.date) {
+        strTime = this.formatDate(this.form.date[0]);
+        endTime = this.formatDate(this.form.date[1]);
+      } else {
+        strTime = null;
+        endTime = null;
+      }
       let online = this.form.online ? 0 : 1;
       let res = await this.$api
-        .createCarouselImg(
+        .createAnnouncements(
           this.form.title,
-          this.form.group,
-          this.form.pic,
-          this.form.url,
-          online
+          this.form.content,
+          online,
+          strTime,
+          endTime
         )
         .catch(err => {
           return err;
         });
+      console.log(res);
       return res;
     },
     //Dialog 关闭的回调
     closeDialog() {
       let type = this.type == "change" ? "change" : "create";
       this.$emit("closeDialog", type);
+    },
+    formatDate(date) {
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      return y + "-" + m + "-" + d;
     }
   },
   watch: {
     info() {
+      let strTime = new Date(Date.parse(this.info.start_time.replace(/-/g,  "/")));
+      let endTime = new Date(Date.parse(this.info.end_time.replace(/-/g,  "/")));
+      let date = [strTime,endTime];
       this.id = this.info.id;
       this.form = {
         title: this.info.title,
-        group: this.info.group_id,
-        pic: this.info.pic,
-        url: this.info.url,
+        content: this.info.content,
+        date: date,
         online: this.info.online == 0 ? true : false
       };
     }
@@ -213,7 +187,7 @@ export default {
 
 <style scoped>
 @import "../../assets/css/base.css";
-.changeOrcreateBanner {
+.changeOrcreate {
   width: 100%;
   height: 100%;
 }

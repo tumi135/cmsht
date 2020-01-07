@@ -10,20 +10,19 @@ export default new Vuex.Store({
     uuid: null,
     username: null,
     avatar: null,
-    userInfo: null,
-    login: false
+    userInfo: null
   },
   mutations: {
     login: (state, data) => {
-      storages.localSet('token', data.token)
-      storages.localSet('uuid', data.uuid)
+      storages.sessionSet('token', data.token)
+      storages.sessionSet('uuid', data.uuid)
       state.token = data.token
       state.uuid = data.uuid
-      state.login = true
     },
     saveUserInfo: (state, data) => {
+      state.token = storages.sessionGet("token");
+      state.uuid = storages.sessionGet("uuid");
       state.userInfo = data
-      state.login = true
     },
     saveUserextInfo: (state, data) => {
       let oldState = JSON.parse(JSON.stringify(state.userInfo));
@@ -31,12 +30,10 @@ export default new Vuex.Store({
       state.userInfo = oldState;
     },
     logout: (state) => {
-      storages.localRemove('token')
-      storages.localRemove('uuid')
+      storages.sessionRemove('token')
+      storages.sessionRemove('uuid')
       state.token = null
       state.uuid = null
-      state.login = false
-
     }
   },
   actions: {},

@@ -14,6 +14,7 @@ const My = () => import("../views/my");
 const ChangePassword = () => import("../views/changePassword");
 const Banner = () => import("../views/banner");
 const FunnyImg = () => import("../views/funnyImg");
+const Announcements = () => import("../views/announcements");
 
 Vue.use(VueRouter);
 
@@ -66,6 +67,15 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['系统设置', '轮播图']
+        }
+      },
+      {
+        path: "announcements",
+        name: "announcements",
+        component: Announcements,
+        meta: {
+          requireAuth: true,
+          routerName: ['系统设置', '公告']
         }
       },
       {

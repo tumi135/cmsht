@@ -1,6 +1,15 @@
 import axios from "./axios";
 import crypto from "crypto";
 import store from "../store/index";
+import storages from "../my_config/storages";
+
+function checkLogin() {
+  if (storages.sessionGet("token") && storages.sessionGet("uuid")) {
+    return true
+  } else {
+    return false
+  }
+}
 
 const api = {
   //创建新的验证码接口data:image/jpeg;base64,
@@ -23,7 +32,9 @@ const api = {
     const md5 = crypto.createHash("md5");
     md5.update(password);
     let md5password = md5.digest("hex");
-    let ext_info = JSON.stringify({"yesapi_avatar":"http://cd7.yesapi.net/C6FB2E902F9FDA74101B4887AF935333_20191229175409_e7ca1f115b39297a555329a8aa061e2c.jpeg"})
+    let ext_info = JSON.stringify({
+      "yesapi_avatar": "http://cd7.yesapi.net/C6FB2E902F9FDA74101B4887AF935333_20191229175409_e7ca1f115b39297a555329a8aa061e2c.jpeg"
+    })
     return axios.post("/", {
       s: "App.User.Register",
       password: md5password,
@@ -188,6 +199,10 @@ const api = {
   },
   //base64图片上传接口
   uploadImgByBase64: (file, file_name) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     return axios.post("/", {
       s: "App.CDN.UploadImgByBase64",
       file: file,
@@ -204,6 +219,10 @@ const api = {
   },
   //创建趣图
   createFunnyImg: (image_title, image_link, image_desc, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       uuid: store.state.uuid,
       image_title: image_title,
@@ -235,6 +254,10 @@ const api = {
   },
   //修改趣图
   funnyImgChange: (id, image_title, image_link, image_desc, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       image_title: image_title,
       image_link: image_link,
@@ -251,6 +274,10 @@ const api = {
   },
   //删除趣图
   deleteFunnyImg: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let where = [];
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
@@ -263,14 +290,17 @@ const api = {
     });
   },
   //创建轮播图
-  createCarouselImg: (title, group_id, pic, url, online, create_by) => {
+  createCarouselImg: (title, group_id, pic, url, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
-      uuid: store.state.uuid,
       title: title,
       group_id: group_id,
       pic: pic,
       url: url,
-      create_by: create_by,
+      create_by: store.state.userInfo.username,
       online: online
     };
     console.log(data)
@@ -284,6 +314,10 @@ const api = {
   },
   //修改轮播图
   updateCarouselImg: (id, title, group_id, pic, url, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       title: title,
       group_id: group_id,
@@ -330,6 +364,10 @@ const api = {
   },
   //轮播图上线、下线
   carouselImgOnlineChange: (id, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       online: online
     };
@@ -343,6 +381,10 @@ const api = {
   },
   //删除轮播图
   deleteCarouselImg: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let where = [];
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
@@ -356,26 +398,33 @@ const api = {
     });
   },
   //创建公告
-  createAnnouncements: (title, content, deleted) => {
+  createAnnouncements: (title, content, online, start_time, end_time) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       uuid: store.state.uuid,
       title: title,
       content: content,
-      deleted: deleted
+      online: online,
+      start_time: start_time,
+      end_time: end_time,
+      create_by: store.state.userInfo.username
     };
     data = JSON.stringify(data);
     return axios.post("/", {
       s: "App.Table.CheckCreateOrUpdate",
       model_name: "yesapi_crm_announcements",
       data: data,
-      check_field: "title, content, deleted"
+      check_field: "title,content"
     });
   },
   //公告分页查询列表数据接口
-  announcementsFreeQuery: (page, perpage, deleted) => {
+  announcementsFreeQuery: (page, perpage, online) => {
     let where = ["id>0"];
-    if (deleted) {
-      where.push("deleted=" + deleted);
+    if (online) {
+      where.push("deleted=" + online);
     }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
@@ -387,11 +436,34 @@ const api = {
     });
   },
   //修改公告
-  announcementsChange: (id, title, content, deleted) => {
+  announcementsChange: (id, title, content, online, start_time, end_time) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       title: title,
       content: content,
-      deleted: deleted
+      online: online,
+      start_time: start_time,
+      end_time: end_time
+    };
+    data = JSON.stringify(data);
+    return axios.post("/", {
+      s: "App.Table.Update",
+      model_name: "yesapi_crm_announcements",
+      id: id,
+      data: data
+    });
+  },
+  //公告上线、下线
+  announcementsOnlineChange: (id, online) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+    let data = {
+      online: online
     };
     data = JSON.stringify(data);
     return axios.post("/", {
@@ -403,6 +475,10 @@ const api = {
   },
   //删除公告
   deleteAnnouncements: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let where = [];
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
@@ -416,6 +492,10 @@ const api = {
   },
   //创建文章分类
   createArticleType: (type_name, listorder, deleted, litpic) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       uuid: store.state.uuid,
       type_name: type_name,
@@ -448,6 +528,10 @@ const api = {
   },
   //修改文章分类
   articleTypeChange: (id, type_name, listorder, deleted, litpic) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       type_name: type_name,
       listorder: listorder,
@@ -464,6 +548,10 @@ const api = {
   },
   //删除文章分类
   deletearticleType: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let where = [];
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
@@ -477,6 +565,10 @@ const api = {
   },
   //创建文章
   createArticle: (type_id, content, litpic) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       uuid: store.state.uuid,
       user_id: store.state.uuid,
@@ -516,6 +608,10 @@ const api = {
   },
   //修改文章
   articleChange: (id, type_id, content, litpic) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       type_id: type_id,
       content: content,
@@ -531,6 +627,10 @@ const api = {
   },
   //删除文章
   deletearticle: id => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     //删文章表
     function deleteMyArticle() {
       let where = ["id=" + id];
@@ -546,6 +646,10 @@ const api = {
     }
     //删评论表
     function deleteMyComment() {
+      let check = checkLogin;
+      if (!check) {
+        return Promise.reject("请登录后再操作")
+      }
       return axios.post("/", {
         s: "App.Table.FreeDelete",
         model_name: "yesapi_ann_blog_comment",
@@ -555,6 +659,10 @@ const api = {
     }
     //删赞表
     function deleteMyPraise() {
+      let check = checkLogin;
+      if (!check) {
+        return Promise.reject("请登录后再操作")
+      }
       return axios.post("/", {
         s: "App.Table.FreeDelete",
         model_name: "yesapi_ann_blog_comment",
@@ -566,6 +674,11 @@ const api = {
   },
   //创建评论
   createComment: (tid, content, uid, create_name, rid, r_name) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+
     function createMyComment() {
       let data = {
         uuid: store.state.uuid,
@@ -631,6 +744,11 @@ const api = {
   },
   //删除评论
   deleteComment: (tid, ...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+
     function deleteComments() {
       let where = [];
       for (let i = 0; i < id.length; i++) {
@@ -643,6 +761,7 @@ const api = {
         where: where
       });
     }
+
     function changeArticle() {
       return axios.post("/", {
         s: "App.Table.ChangeNumber",
@@ -656,6 +775,10 @@ const api = {
   },
   //创建意见反馈
   createFeedback: (title, content) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let data = {
       uuid: store.state.uuid,
       user_name: store.state.username,
@@ -683,6 +806,10 @@ const api = {
   },
   //删除意见反馈
   deleteFeedback: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
     let where = [];
     for (let i = 0; i < id.length; i++) {
       where.push("id=" + id[i]);
@@ -696,6 +823,11 @@ const api = {
   },
   //点赞
   createPraise: articleId => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+
     function changePraise() {
       let data = {
         uuid: store.state.uuid,
@@ -735,6 +867,11 @@ const api = {
   },
   //取消赞
   deletePraise: articleId => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+
     function deletePraise() {
       let where = ["articleId=" + articleId, "userId=" + store.state.uuid];
       return axios.post("/", {

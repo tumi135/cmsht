@@ -7,7 +7,9 @@ export const tableMixins = {
     },
     //表格样式
     cellsClass() {
-      return {textAlign: 'center'}
+      return {
+        textAlign: 'center'
+      }
     }
-  }
+  },
 }

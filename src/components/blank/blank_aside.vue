@@ -10,6 +10,8 @@
       <span slot="title">系统设置</span>
     </template>
       <el-menu-item index="banner">轮播图</el-menu-item>
+      <el-menu-item index="announcements">公告</el-menu-item>
+      <el-menu-item index="funnyImg">趣图</el-menu-item>
   </el-submenu>
   <el-submenu index="3">
     <template slot="title">

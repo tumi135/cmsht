@@ -10,16 +10,16 @@ axios.interceptors.request.use(
   config => {
     //在发送请求之前做些什么
     if (config.data.token) {
-      config.data.token = storages.localGet("token");
+      config.data.token = storages.sessionGet("token");
     }
     if (config.data.uuid) {
-      config.data.uuid = storages.localGet("uuid");
+      config.data.uuid = storages.sessionGet("uuid");
     }
     if (config.data.admin_token) {
-      config.data.token = storages.localGet("token");
+      config.data.token = storages.sessionGet("token");
     }
     if (config.data.admin_uuid) {
-      config.data.uuid = storages.localGet("uuid");
+      config.data.uuid = storages.sessionGet("uuid");
     }
     config.data = {
       ...config.data,
