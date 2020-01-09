@@ -9,6 +9,15 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
 Vue.prototype.$api = api;
+// Vue.config.module.rules.push({
+//   enforce: 'pre',
+//   test: /\.(js|vue)$/,
+//   loader: 'eslint-loader',
+//   exclude: /(node_modules)/,
+//   options: {
+//     fix: true
+//   }
+// })
 
 new Vue({
   router,
