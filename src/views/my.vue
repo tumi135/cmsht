@@ -10,10 +10,8 @@
           :on-change="changeAvatar"
           accept=".jpg, .jpeg, .png, .gif, .bmp, .pdf, .JPG, .JPEG, .PBG, .GIF, .BMP, .PDF"
         >
-          <el-button size="small" slot="trigger">本地图片</el-button>
-          <el-button size="small" @click="sentWebImg" class="web-img-btn">网络图片</el-button>
           <img v-if="myUserInfo.avatar" :src="myUserInfo.avatar" class="uploaderImg" />
-          <img v-show="img" crossOrigin="anonymous" :src="img" ref="img" class="uploaderImg" />
+          <i v-else class="el-icon-plus my-uploader-icon"></i>
         </el-upload>
       </el-form-item>
       <el-form-item
@@ -151,25 +149,6 @@ export default {
         this.option.img = URL.createObjectURL(file.raw);
         this.dialogVisible = true;
       });
-    },
-    sentWebImg() {
-      this.$prompt("请输入图片地址", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then( ({ value }) => {
-          this.$nextTick(() => {
-            this.option.img = value+'?timeStamp='+new Date().getTime();
-            this.dialogVisible = true;
-          })
-          
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消输入"
-          });
-        });
     },
     // 实时预览函数
     realTime(data) {
