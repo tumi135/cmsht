@@ -3,7 +3,12 @@
     <div class="search-box">
       <el-form :inline="true" :model="searchform" class="demo-form-inline">
         <el-form-item>
-          <el-select placeholder="当前状态" v-model="searchform.online" class="my-select" clearable>
+          <el-select
+            placeholder="当前状态"
+            v-model="searchform.online"
+            class="my-select"
+            clearable
+          >
             <el-option
               class="my-select"
               v-for="item in onlineOptions"
@@ -19,8 +24,15 @@
       </el-form>
     </div>
     <div class="control-btn-box">
-      <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除公告</el-button>
-      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建公告</el-button>
+      <el-button
+        type="danger"
+        icon="el-icon-delete"
+        @click="handleDelete('more')"
+        >删除公告</el-button
+      >
+      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true"
+        >创建公告</el-button
+      >
     </div>
     <el-table
       class="content"
@@ -51,26 +63,32 @@
       <el-table-column prop="title" label="标题" width="180"></el-table-column>
       <el-table-column label="开始时间" width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.start_time?scope.row.start_time:'-'}}</span>
+          <span>{{ scope.row.start_time ? scope.row.start_time : "-" }}</span>
         </template>
       </el-table-column>
       <el-table-column label="结束时间" width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.end_time?scope.row.end_time:'-'}}</span>
+          <span>{{ scope.row.end_time ? scope.row.end_time : "-" }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="group_id" label="当前状态" width="120">
         <template slot-scope="scope">
           <el-tag
-            :type="!scope.row.online?'success':'warning'"
+            :type="!scope.row.online ? 'success' : 'warning'"
             @click="changeOnline(scope.$index, scope.row)"
-          >{{!scope.row.online?'去下架':'去上架'}}</el-tag>
+            >{{ !scope.row.online ? "去下架" : "去上架" }}</el-tag
+          >
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete('one', scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete('one', scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -140,24 +158,20 @@ export default {
           ? this.searchform.online
           : null;
       let datas = await this.$api
-        .announcementsFreeQuery(
-          this.page,
-          this.pageSize,
-          online
-        )
+        .announcementsFreeQuery(this.page, this.pageSize, online)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
           return "";
         });
-        console.log(datas)
+      console.log(datas);
       this.tableData = datas.data.list || [];
       this.total = datas.data.total;
       this.fullscreenLoading = false;
     },
     //改变上下架
     async changeOnline(index, info) {
-      console.log(info)
+      console.log(info);
       let nowOnline = info.online == 1 ? 0 : 1;
       let announcementsOnlineChange = await this.$api
         .announcementsOnlineChange(info.id, nowOnline)
@@ -166,31 +180,12 @@ export default {
           this.$message.error("数据获取失败");
           return "";
         });
-        console.log(announcementsOnlineChange)
+      console.log(announcementsOnlineChange);
       if (
         announcementsOnlineChange.ret == 200 &&
         announcementsOnlineChange.data.err_code == 0
       ) {
         this.$set(this.tableData[index], "online", nowOnline);
-      }
-    },
-    //获取选中的选项
-    handleSelectionChange(selection) {
-      this.selectList = selection.map(item => {
-        return item.id;
-      });
-    },
-    //打开dialogs，方便进行编辑
-    handleEdit(val) {
-      this.changeDialog = true;
-      this.changeInfo = val;
-    },
-    //关闭DIALOG
-    closeDialogs(val) {
-      if (val == "change") {
-        this.changeDialog = false;
-      } else if (val == "create") {
-        this.createDialog = false;
       }
     },
     //删除选中的
@@ -219,16 +214,10 @@ export default {
       ) {
         this.$router.go(0);
       }
-    },
-    //查询
-    onSearch() {
-      this.page = 1;
-      this.initData();
     }
   },
   components: {
-    changeOrcreate: () =>
-      import("../components/announcements/changeOrcreate")
+    changeOrcreate: () => import("../components/announcements/changeOrcreate")
   }
 };
 </script>

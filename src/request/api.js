@@ -218,7 +218,7 @@ const api = {
     });
   },
   //创建趣图
-  createFunnyImg: (image_title, image_link, image_desc, online) => {
+  createFunnyImg: (image_title, image_link, image_desc) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -228,7 +228,7 @@ const api = {
       image_title: image_title,
       image_link: image_link,
       image_desc: image_desc,
-      online: online
+      create_by: store.state.userInfo.username
     };
     data = JSON.stringify(data);
     return axios.post("/", {
@@ -239,10 +239,10 @@ const api = {
     });
   },
   //趣图分页查询列表数据接口
-  funnyImgFreeQuery: (page, perpage, online) => {
+  funnyImgFreeQuery: (page, perpage, image_title) => {
     let where = ["id>0"];
-    if (online) {
-      where.push("deleted=" + online);
+    if (image_title) {
+      where.push("image_title=" + image_title);
     }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
@@ -253,7 +253,7 @@ const api = {
     });
   },
   //修改趣图
-  funnyImgChange: (id, image_title, image_link, image_desc, online) => {
+  funnyImgChange: (id, image_title, image_link, image_desc) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -261,8 +261,7 @@ const api = {
     let data = {
       image_title: image_title,
       image_link: image_link,
-      image_desc: image_desc,
-      online: online
+      image_desc: image_desc
     };
     data = JSON.stringify(data);
     return axios.post("/", {
@@ -274,7 +273,7 @@ const api = {
   },
   //删除趣图
   deleteFunnyImg: (...id) => {
-    let check = checkLogin;
+    let check = checkLogin
     if (!check) {
       return Promise.reject("请登录后再操作")
     }
