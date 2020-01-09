@@ -4,7 +4,7 @@
       <el-form :inline="true" :model="searchform" class="demo-form-inline">
         <el-form-item>
           <el-input
-            v-model="searchform.title"
+            v-model="searchform.image_title"
             placeholder="标题"
             maxlength="20"
             show-word-limit
@@ -88,9 +88,7 @@ export default {
   data() {
     return {
       searchform: {
-        title: null,
-        group: null,
-        online: null
+        image_title: ""
       },
       fullscreenLoading: false,
       tableData: [],
@@ -115,7 +113,7 @@ export default {
         .funnyImgFreeQuery(
           this.page,
           this.pageSize,
-          this.searchform.image_link
+          this.searchform.image_title
         )
         .catch(err => {
           console.log(err);

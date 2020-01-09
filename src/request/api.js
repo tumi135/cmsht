@@ -242,7 +242,7 @@ const api = {
   funnyImgFreeQuery: (page, perpage, image_title) => {
     let where = ["id>0"];
     if (image_title) {
-      where.push("image_title=" + image_title);
+      where.push("image_title='" + image_title+"'");
     }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
@@ -344,7 +344,7 @@ const api = {
   carouselImgFreeQuery: (page, perpage, title, group_id, online) => {
     let where = ["id>0"];
     if (title) {
-      where.push("title=" + title);
+      where.push("title='" + title+"'");
     }
     if (group_id || group_id == 0) {
       where.push("group_id=" + group_id);
@@ -422,8 +422,8 @@ const api = {
   //公告分页查询列表数据接口
   announcementsFreeQuery: (page, perpage, online) => {
     let where = ["id>0"];
-    if (online) {
-      where.push("deleted=" + online);
+    if (online || online == 0) {
+      where.push("online=" + online);
     }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
