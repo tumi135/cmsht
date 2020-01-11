@@ -46,12 +46,15 @@
 </template>
 
 <script>
+import { changeOrcreateMixins } from "../../mixins/changeOrcreate";
+
 export default {
   props: {
     type: String,
     dialogFormVisible: Boolean,
     info: Object
   },
+    mixins: [changeOrcreateMixins],
   data() {
     return {
       fullscreenLoading: false,
@@ -72,40 +75,6 @@ export default {
     // console.log(this.type);
   },
   methods: {
-    async submitForm() {
-      this.$refs.form.validate(async valid => {
-        if (valid) {
-          this.fullscreenLoading = true;
-          var res;
-          if (this.type == "change") {
-            res = await this.submitChange();
-          } else if (this.type == "create") {
-            res = await this.submitCreate();
-          } else {
-            this.$message({
-              message: "操作失败！",
-              type: "error"
-            });
-            return false;
-          }
-          if (res.ret == 200 && res.data.err_code == 0) {
-            this.$message({
-              message: "操作成功!",
-              type: "success"
-            });
-            this.$router.go(0);
-          } else {
-            this.$message({
-              message: "网络错误，操作失败！",
-              type: "error"
-            });
-          }
-          this.fullscreenLoading = false;
-        } else {
-          return false;
-        }
-      });
-    },
     async submitChange() {
       var strTime, endTime;
       if (this.form.date) {
@@ -153,11 +122,6 @@ export default {
         });
       console.log(res);
       return res;
-    },
-    //Dialog 关闭的回调
-    closeDialog() {
-      let type = this.type == "change" ? "change" : "create";
-      this.$emit("closeDialog", type);
     },
     formatDate(date) {
       var y = date.getFullYear();

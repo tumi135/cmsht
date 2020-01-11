@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
 }
-/* .my-uploader .el-upload {
+.my-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -19,7 +19,7 @@
   height: 178px;
   line-height: 178px;
   text-align: center;
-} */
+}
 .web-img-btn{
   margin-left: 20px;
 }

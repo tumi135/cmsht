@@ -490,7 +490,7 @@ const api = {
     });
   },
   //创建文章分类
-  createArticleType: (type_name, listorder, deleted, litpic) => {
+  createArticleType: (type_name, listorder, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -499,23 +499,20 @@ const api = {
       uuid: store.state.uuid,
       type_name: type_name,
       listorder: listorder,
-      deleted: deleted,
-      litpic: litpic
+      litpic: litpic,
+      create_by: store.state.userInfo.username
     };
     data = JSON.stringify(data);
     return axios.post("/", {
       s: "App.Table.CheckCreateOrUpdate",
       model_name: "yesapi_fl_article_type",
       data: data,
-      check_field: "type_name, listorder, deleted, litpic"
+      check_field: "type_name,listorder,litpic"
     });
   },
   //文章分类分页查询列表数据接口
-  articleTypeFreeQuery: (page, perpage, deleted) => {
+  articleTypeFreeQuery: (page, perpage) => {
     let where = ["id>0"];
-    if (deleted) {
-      where.push("deleted=" + deleted);
-    }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
       model_name: "yesapi_fl_article_type",
@@ -526,7 +523,7 @@ const api = {
     });
   },
   //修改文章分类
-  articleTypeChange: (id, type_name, listorder, deleted, litpic) => {
+  articleTypeChange: (id, type_name, listorder, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -534,7 +531,6 @@ const api = {
     let data = {
       type_name: type_name,
       listorder: listorder,
-      deleted: deleted,
       litpic: litpic
     };
     data = JSON.stringify(data);

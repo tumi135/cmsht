@@ -53,12 +53,15 @@
 </template>
 
 <script>
+import { changeOrcreateMixins } from "../../mixins/changeOrcreate";
+
 export default {
   props: {
     type: String,
     dialogFormVisible: Boolean,
     info: Object
   },
+  mixins: [changeOrcreateMixins],
   data() {
     return {
       fullscreenLoading: false,
@@ -71,12 +74,8 @@ export default {
         online: true
       },
       formRules: {
-        title:[
-            { required: true, message: '请填写标题', trigger: 'blur' }
-          ],
-        pic: [
-            { required: true, message: '请上传图片', trigger: 'blur' }
-          ]
+        title: [{ required: true, message: "请填写标题", trigger: "blur" }],
+        pic: [{ required: true, message: "请上传图片", trigger: "blur" }]
       },
       groupOptions: [
         {
@@ -98,67 +97,6 @@ export default {
     // console.log(this.type);
   },
   methods: {
-    //上传本地图片
-    async uploaderImg(file) {
-      const isLt1M = file.size / 1024 / 1024 / 2 < 1;
-      let reader = new FileReader(); //html5读文件
-      let that = this;
-      if (!isLt1M) {
-        this.$message.error("上传文件大小不能超过 500k!");
-        return false;
-      }
-      reader.readAsDataURL(file.raw); //转BASE64
-      reader.onload = async function() {
-        //读取完毕后调用接口
-        let banner = await that.$api
-          .uploadImgByBase64(reader.result, "banner")
-          .catch(err => {
-            return err;
-          });
-        if (banner.ret == 200 && banner.data.err_code == 0) {
-          that.form.pic = banner.data.url;
-        } else {
-          that.$message({
-            message: "图片上传失败,刷新或换图片！",
-            type: "error"
-          });
-        }
-      };
-    },
-    async submitForm() {
-      this.$refs.form.validate(async valid => {
-        if (valid) {
-          this.fullscreenLoading = true;
-          var res;
-          if (this.type == "change") {
-            res = await this.submitChange();
-          } else if (this.type == "create") {
-            res = await this.submitCreate();
-          } else {
-            this.$message({
-              message: "操作失败！",
-              type: "error"
-            });
-            return false
-          }
-          if (res.ret == 200 && res.data.err_code == 0) {
-            this.$message({
-              message: "操作成功!",
-              type: "success"
-            });
-            this.$router.go(0);
-          } else {
-            this.$message({
-              message: "操作失败！",
-              type: "error"
-            });
-          }
-          this.fullscreenLoading = false;
-        } else {
-          return false;
-        }
-      });
-    },
     async submitChange() {
       let online = this.form.online ? 0 : 1;
       let res = await this.$api
@@ -189,11 +127,6 @@ export default {
           return err;
         });
       return res;
-    },
-    //Dialog 关闭的回调
-    closeDialog() {
-      let type = this.type == "change" ? "change" : "create";
-      this.$emit("closeDialog", type);
     }
   },
   watch: {
