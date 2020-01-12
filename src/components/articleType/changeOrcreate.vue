@@ -8,14 +8,18 @@
   >
     <el-form :model="form" label-width="80px" ref="form" :rules="formRules">
       <el-form-item label="分类名" prop="type_name">
-        <el-input v-model="form.type_name" maxlength="5" show-word-limit></el-input>
+        <el-input
+          v-model="form.type_name"
+          maxlength="5"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="listorder">
         <el-input
           v-model="form.listorder"
           maxlength="2"
           show-word-limit
-          placeholder="50以内正整数，数字越大越靠后"
+          placeholder="50以内正整数，数字越小越靠后"
         ></el-input>
       </el-form-item>
       <el-form-item label="上传图片" prop="pic">
@@ -39,7 +43,8 @@
         type="primary"
         @click="submitForm"
         v-loading.fullscreen.lock="fullscreenLoading"
-      >确 定</el-button>
+        >确 定</el-button
+      >
     </div>
   </el-dialog>
 </template>
@@ -101,8 +106,8 @@ export default {
       return res;
     },
     async submitCreate() {
-      if (this.myTotal >= 10) {
-        var tips;
+      var tips;
+      if (this.myTotal >= 18 && this.myTotal < 30) {
         await this.$confirm("文章分类已超9种, 是否继续增加?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -114,6 +119,17 @@ export default {
           .catch(() => {
             tips = "取消操作";
           });
+        return tips;
+      } else if (this.myTotal >= 11) {
+        await this.$alert(
+          "文章分类已有30种, 请删除不需要的分类后再添加",
+          "提示",
+          {
+            confirmButtonText: "确定"
+          }
+        ).then(() => {
+          tips = "取消操作";
+        });
         return tips;
       } else {
         return this.createType();

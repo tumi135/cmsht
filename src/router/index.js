@@ -16,6 +16,7 @@ const Banner = () => import("../views/banner");
 const FunnyImg = () => import("../views/funnyImg");
 const Announcements = () => import("../views/announcements");
 const AarticleType = () => import("../views/articleType");
+const Aarticle = () => import("../views/article");
 
 Vue.use(VueRouter);
 
@@ -95,6 +96,15 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['文章管理', '文章分类']
+        }
+      },
+      {
+        path: "article",
+        name: "article",
+        component: Aarticle,
+        meta: {
+          requireAuth: true,
+          routerName: ['文章管理', '文章列表']
         }
       }
     ]

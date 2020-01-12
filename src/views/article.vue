@@ -3,22 +3,24 @@
     <div class="search-box">
       <el-form :inline="true" :model="searchform" class="demo-form-inline">
         <el-form-item>
-          <el-input
-            v-model="searchform.title"
-            placeholder="标题"
-            maxlength="20"
-            show-word-limit
-            class="searchTitle"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-select placeholder="分组" v-model="searchform.group" class="my-select" clearable>
+          <el-select placeholder="排序" v-model="searchform.order" class="my-select" clearable>
             <el-option
               class="my-select"
               v-for="item in groupOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select placeholder="分类" v-model="searchform.type_id" class="my-select" clearable>
+            <el-option
+              class="my-select"
+              v-for="item in typeList"
+              :key="item.id"
+              :label="item.type_name"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -39,8 +41,8 @@
       </el-form>
     </div>
     <div class="control-btn-box">
-      <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除轮播图</el-button>
-      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建轮播图</el-button>
+      <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除文章</el-button>
+      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建文章</el-button>
     </div>
     <el-table
       class="content"
@@ -52,33 +54,25 @@
       :header-cell-style="cellsClass"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column type="expand" label="更多">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="创建时间">
-              <span>{{ props.row.add_time }}</span>
-            </el-form-item>
-            <el-form-item label="链接">
-              <span>{{ props.row.url }}</span>
-            </el-form-item>
-            <el-form-item label="创建者">
-              <span>{{ props.row.create_by }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-      <el-table-column prop="id" label="编号" width="80"></el-table-column>
-      <el-table-column prop="title" label="标题" width="180"></el-table-column>
-      <el-table-column label="轮播图" width="180">
+      <el-table-column prop="id" label="编号" width="60"></el-table-column>
+      <el-table-column prop="type_name" label="分类" width="60">
         <template slot-scope="scope">
-          <img :src="scope.row.pic" class="banner-item" />
+          <span>{{fiterType(scope.row.type_id)}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="分组" width="120">
-        <template slot-scope="scope">
-          <span>{{groupOptions[scope.row.group_id].label}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="content" label="内容" width="180">
+          <template slot-scope="scope">
+            <el-popover placement="top-start" width="250" trigger="hover" >
+              <div>{{scope.row.content}}</div>
+                <span slot="reference">{{ scope.row.content.substr(0,30)+'...' }}</span>
+            </el-popover>
+          </template>
+    </el-table-column>
+      <el-table-column prop="tuijian" label="推荐等级" width="60"></el-table-column>
+      <el-table-column prop="praise_num" label="	点赞数" width="80"></el-table-column>
+      <el-table-column prop="comment_num" label="评论数" width="80"></el-table-column>
+      <el-table-column prop="add_time" label="创建时间" width="100"></el-table-column>
+      <el-table-column prop="writer" label="创建者" width="100"></el-table-column>
       <el-table-column prop="group_id" label="当前状态" width="120">
         <template slot-scope="scope">
           <el-tag
@@ -95,17 +89,18 @@
       </el-table-column>
     </el-table>
     <!-- 编辑窗口 -->
-    <change-orcreate-banner
+    <change-orcreate
       type="change"
       :dialog-form-visible="changeDialog"
       @closeDialog="closeDialogs"
       :info="changeInfo"
     />
     <!--创建窗口-->
-    <change-orcreate-banner
+    <change-orcreate
       type="create"
       :dialog-form-visible="createDialog"
       @closeDialog="closeDialogs"
+      :my-total="total"
     />
     <el-pagination
       layout="prev, pager, next, jumper"
@@ -123,9 +118,9 @@ export default {
   data() {
     return {
       searchform: {
-        title: null,
-        group: null,
-        online: null
+        type_id: null,
+        online: null,
+        order: null
       },
       fullscreenLoading: false,
       tableData: [],
@@ -136,20 +131,7 @@ export default {
       changeDialog: false,
       createDialog: false,
       changeInfo: {},
-      groupOptions: [
-        {
-          label: "首页",
-          value: 0
-        },
-        {
-          label: "发现",
-          value: 1
-        },
-        {
-          label: "我的",
-          value: 2
-        }
-      ],
+      typeList: [],
       onlineOptions: [
         {
           label: "上架中",
@@ -159,31 +141,48 @@ export default {
           label: "下架中",
           value: 1
         }
+      ],
+      groupOptions: [
+        {
+          label: "时间",
+          value: "id"
+        },
+        {
+          label: "评论数",
+          value: "comment_num"
+        },
+        {
+          label: "点赞数",
+          value: "praise_num"
+        },
+        {
+          label: "推荐等级",
+          value: "tuijian"
+        }
       ]
     };
   },
   mixins: [tableMixins],
   created() {
+    this.initTypeList();
     this.initData();
   },
   methods: {
     async initData() {
       this.fullscreenLoading = true;
-      let group =
-        [0, 1, 2].indexOf(this.searchform.group) >= 0
-          ? this.searchform.group
-          : null;
+      let order = this.searchform.order ? this.searchform.order : null;
+      let type_id = this.searchform.type_id ? this.searchform.type_id : null;
       let online =
         [0, 1].indexOf(this.searchform.online) >= 0
           ? this.searchform.online
           : null;
       let datas = await this.$api
-        .carouselImgFreeQuery(
+        .articleFreeQuery(
           this.page,
           this.pageSize,
-          this.searchform.title,
-          group,
-          online
+          type_id,
+          online,
+          order
         )
         .catch(err => {
           console.log(err);
@@ -194,11 +193,19 @@ export default {
       this.total = datas.data.total;
       this.fullscreenLoading = false;
     },
+    async initTypeList() {
+      let datas = await this.$api.articleTypeFreeQuery(1, 30).catch(err => {
+        console.log(err);
+        this.$message.error("数据获取失败");
+        return "";
+      });
+      this.typeList = datas.data.list || [];
+    },
     //改变上下架
     async changeOnline(index, info) {
       let nowOnline = info.online == 1 ? 0 : 1;
       let carouselImgOnlineChange = await this.$api
-        .carouselImgOnlineChange(info.id, nowOnline)
+        .articleOnlineChange(info.id, nowOnline)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
@@ -220,28 +227,37 @@ export default {
         deletes = this.selectList;
       }
       if (deletes.length === 0) {
-        this.$message.error("请选择删除的轮播图");
+        this.$message.error("请选择删除的文章");
         return false;
       }
 
-      let deleteCarouselImg = await this.$api
-        .deleteCarouselImg(...deletes)
+      let deletearticleType = await this.$api
+        .deletearticleType(...deletes)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
           return "";
         });
       if (
-        deleteCarouselImg.ret == 200 &&
-        deleteCarouselImg.data.err_code == 0
+        deletearticleType.ret == 200 &&
+        deletearticleType.data.err_code == 0
       ) {
         this.$router.go(0);
       }
     },
+    fiterType: function(value) {
+      let type = this.typeList.find(item => {
+        return value == item.id;
+      });
+      if(type){
+        return type.type_name
+      } else {
+        return "-"
+      }
+    }
   },
   components: {
-    changeOrcreateBanner: () =>
-      import("../components/banner/changeOrcreateBanner")
+    changeOrcreate: () => import("../components/articleType/changeOrcreate")
   }
 };
 </script>
@@ -273,8 +289,13 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.banner-item {
-  width: 160px;
-  max-height: 160px;
+.art-type-item {
+  width: 80px;
+  max-height: 80px;
+}
+.article-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

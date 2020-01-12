@@ -559,7 +559,7 @@ const api = {
     });
   },
   //创建文章
-  createArticle: (type_id, content, litpic) => {
+  createArticle: (type_id, content, online, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -570,6 +570,7 @@ const api = {
       writer: store.state.username,
       type_id: type_id,
       content: content,
+      online: online,
       litpic: litpic
     };
     data = JSON.stringify(data);
@@ -590,11 +591,21 @@ const api = {
     });
   },
   //文章分页查询列表数据接口
-  articleFreeQuery: (page, perpage, type_id, order) => {
-    let where = ["id>0", "type_id=" + type_id];
+  articleFreeQuery: (page, perpage, type_id, online, order) => {
+    let where = ["id>0"];
+    if (online || online == 0) {
+      where.push("online=" + online);
+    }
+    if(type_id){
+      where.push("type_id=" + type_id);
+    }
+    if(!order){
+      order = "id"
+    }
+    console.log(type_id+"-"+online+"-"+order)
     return axios.post("/", {
       s: "App.Table.FreeQuery",
-      model_name: "yesapi_fl_article_type",
+      model_name: "yesapi_fl_article",
       where: where,
       page: page,
       perpage: perpage,
@@ -602,7 +613,7 @@ const api = {
     });
   },
   //修改文章
-  articleChange: (id, type_id, content, litpic) => {
+  articleChange: (id, type_id, content,online, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -610,6 +621,7 @@ const api = {
     let data = {
       type_id: type_id,
       content: content,
+      online: online,
       litpic: litpic
     };
     data = JSON.stringify(data);
@@ -620,6 +632,23 @@ const api = {
       data: data
     });
   },
+    //文章上线、下线
+    articleOnlineChange: (id, online) => {
+      let check = checkLogin;
+      if (!check) {
+        return Promise.reject("请登录后再操作")
+      }
+      let data = {
+        online: online
+      };
+      data = JSON.stringify(data);
+      return axios.post("/", {
+        s: "App.Table.Update",
+        model_name: "yesapi_fl_article",
+        id: id,
+        data: data
+      });
+    },
   //删除文章
   deletearticle: id => {
     let check = checkLogin;
