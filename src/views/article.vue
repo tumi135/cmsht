@@ -42,7 +42,7 @@
     </div>
     <div class="control-btn-box">
       <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除文章</el-button>
-      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建文章</el-button>
+      <el-button type="primary" icon="el-icon-edit" @click="toCraeteOrChange('create')">创建文章</el-button>
     </div>
     <el-table
       class="content"
@@ -69,8 +69,18 @@
           </template>
     </el-table-column>
       <el-table-column prop="tuijian" label="推荐等级" width="60"></el-table-column>
-      <el-table-column prop="praise_num" label="	点赞数" width="80"></el-table-column>
-      <el-table-column prop="comment_num" label="评论数" width="80"></el-table-column>
+      <el-table-column prop="praise_num" label="点赞数" width="80"></el-table-column>
+      <el-table-column prop="comment_num" label="评论数" width="80">
+        <template slot-scope="scope">
+          <router-link
+           class="toCommentList"
+            v-if="scope.row.comment_num != 0"
+            :to="{ name: 'commentList', query: { articleId: scope.row.id } }"
+            >{{ scope.row.comment_num }}</router-link
+          >
+          <span v-else>{{scope.row.comment_num}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="add_time" label="创建时间" width="100"></el-table-column>
       <el-table-column prop="writer" label="创建者" width="100"></el-table-column>
       <el-table-column prop="group_id" label="当前状态" width="120">
@@ -83,25 +93,25 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" @click="toCraeteOrChange('change',scope.row.id)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete('one', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 编辑窗口 -->
-    <change-orcreate
+    编辑窗口
+    <!-- <change-orcreate
       type="change"
       :dialog-form-visible="changeDialog"
       @closeDialog="closeDialogs"
       :info="changeInfo"
-    />
+    /> -->
     <!--创建窗口-->
-    <change-orcreate
+    <!-- <change-orcreate
       type="create"
       :dialog-form-visible="createDialog"
       @closeDialog="closeDialogs"
       :my-total="total"
-    />
+    /> -->
     <el-pagination
       layout="prev, pager, next, jumper"
       background
@@ -231,19 +241,27 @@ export default {
         return false;
       }
 
-      let deletearticleType = await this.$api
-        .deletearticleType(...deletes)
+      let deletearticle = await this.$api
+        .deletearticle(...deletes)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
           return "";
         });
       if (
-        deletearticleType.ret == 200 &&
-        deletearticleType.data.err_code == 0
+        deletearticle.ret == 200 &&
+        deletearticle.data.err_code == 0
       ) {
         this.$router.go(0);
       }
+    },
+    toCraeteOrChange: function(val, id){
+      if(val == 'change'){
+        this.$router.push({name:"changeArticle",query:{articleId: id}})
+      } else if(val == 'create'){
+        this.$router.push({name:"createArticle"})
+      }
+
     },
     fiterType: function(value) {
       let type = this.typeList.find(item => {
@@ -255,10 +273,8 @@ export default {
         return "-"
       }
     }
-  },
-  components: {
-    changeOrcreate: () => import("../components/articleType/changeOrcreate")
   }
+  
 };
 </script>
 <style>
@@ -293,9 +309,8 @@ export default {
   width: 80px;
   max-height: 80px;
 }
-.article-content {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.toCommentList{
+  color: #0080ff;
+  text-decoration: none;
 }
 </style>

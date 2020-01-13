@@ -655,46 +655,56 @@ const api = {
     if (!check) {
       return Promise.reject("请登录后再操作")
     }
-    //删文章表
-    function deleteMyArticle() {
-      let where = ["id=" + id];
-      // for (let i = 0; i < id.length; i++) {
-      //   where.push("id=" + id[i]);
-      // }
+    let where = ["id=" + id];
+      for (let i = 0; i < id.length; i++) {
+        where.push("id=" + id[i]);
+      }
       return axios.post("/", {
         s: "App.Table.FreeDelete",
         model_name: "yesapi_fl_article",
         logic: "or",
         where: where
       });
-    }
-    //删评论表
-    function deleteMyComment() {
-      let check = checkLogin;
-      if (!check) {
-        return Promise.reject("请登录后再操作")
-      }
-      return axios.post("/", {
-        s: "App.Table.FreeDelete",
-        model_name: "yesapi_ann_blog_comment",
-        logic: "or",
-        where: ["tid=" + id]
-      });
-    }
-    //删赞表
-    function deleteMyPraise() {
-      let check = checkLogin;
-      if (!check) {
-        return Promise.reject("请登录后再操作")
-      }
-      return axios.post("/", {
-        s: "App.Table.FreeDelete",
-        model_name: "yesapi_ann_blog_comment",
-        logic: "or",
-        where: ["articleId=" + id]
-      });
-    }
-    return axios.all([deleteMyArticle(), deleteMyComment(), deleteMyPraise()]);
+    // //删文章表
+    // function deleteMyArticle() {
+    //   let where = ["id=" + id];
+    //   // for (let i = 0; i < id.length; i++) {
+    //   //   where.push("id=" + id[i]);
+    //   // }
+    //   return axios.post("/", {
+    //     s: "App.Table.FreeDelete",
+    //     model_name: "yesapi_fl_article",
+    //     logic: "or",
+    //     where: where
+    //   });
+    // }
+    // //删评论表
+    // function deleteMyComment() {
+    //   let check = checkLogin;
+    //   if (!check) {
+    //     return Promise.reject("请登录后再操作")
+    //   }
+    //   return axios.post("/", {
+    //     s: "App.Table.FreeDelete",
+    //     model_name: "yesapi_ann_blog_comment",
+    //     logic: "or",
+    //     where: ["tid=" + id]
+    //   });
+    // }
+    // //删赞表
+    // function deleteMyPraise() {
+    //   let check = checkLogin;
+    //   if (!check) {
+    //     return Promise.reject("请登录后再操作")
+    //   }
+    //   return axios.post("/", {
+    //     s: "App.Table.FreeDelete",
+    //     model_name: "yesapi_ann_blog_comment",
+    //     logic: "or",
+    //     where: ["articleId=" + id]
+    //   });
+    // }
+    // return axios.all([deleteMyArticle(), deleteMyComment(), deleteMyPraise()]);
   },
   //创建评论
   createComment: (tid, content, uid, create_name, rid, r_name) => {

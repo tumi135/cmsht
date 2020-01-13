@@ -17,6 +17,9 @@ const FunnyImg = () => import("../views/funnyImg");
 const Announcements = () => import("../views/announcements");
 const AarticleType = () => import("../views/articleType");
 const Aarticle = () => import("../views/article");
+const CreateArticle = () => import("../views/createArticle");
+const ChangeArticle = () => import("../views/changeArticle");
+const CommentList = () => import("../views/commentList");
 
 Vue.use(VueRouter);
 
@@ -105,6 +108,33 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['文章管理', '文章列表']
+        }
+      },
+      {
+        path: "createArticle",
+        name: "createArticle",
+        component: CreateArticle,
+        meta: {
+          requireAuth: true,
+          routerName: ['文章管理', '创建文章']
+        }
+      },
+      {
+        path: "changeArticle",
+        name: "changeArticle",
+        component: ChangeArticle,
+        meta: {
+          requireAuth: true,
+          routerName: ['文章管理', '编辑文章']
+        }
+      },
+      {
+        path: "commentList",
+        name: "commentList",
+        component: CommentList,
+        meta: {
+          requireAuth: true,
+          routerName: ['文章管理', '评论列表']
         }
       }
     ]

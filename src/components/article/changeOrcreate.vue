@@ -1,11 +1,5 @@
 <template class="changeOrcreateBanner">
-  <el-dialog
-    :title="type == 'change' ? '编辑轮播图' : '创建轮播图'"
-    :visible.sync="dialogFormVisible"
-    destroy-on-close
-    :before-close="closeDialog"
-    :close-on-click-modal="false"
-  >
+  <div>
     <el-form :model="form" label-width="80px" ref="form" :rules="formRules">
       <el-form-item label="标题" prop="title">
         <el-input v-model="form.title" maxlength="20" show-word-limit></el-input>
@@ -42,14 +36,13 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
       <el-button
         type="primary"
         @click="submitForm"
         v-loading.fullscreen.lock="fullscreenLoading"
       >确 定</el-button>
     </div>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
