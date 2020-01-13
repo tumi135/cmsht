@@ -242,7 +242,7 @@ const api = {
   funnyImgFreeQuery: (page, perpage, image_title) => {
     let where = ["id>0"];
     if (image_title) {
-      where.push("image_title='" + image_title+"'");
+      where.push("image_title='" + image_title + "'");
     }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
@@ -344,7 +344,7 @@ const api = {
   carouselImgFreeQuery: (page, perpage, title, group_id, online) => {
     let where = ["id>0"];
     if (title) {
-      where.push("title='" + title+"'");
+      where.push("title='" + title + "'");
     }
     if (group_id || group_id == 0) {
       where.push("group_id=" + group_id);
@@ -559,7 +559,7 @@ const api = {
     });
   },
   //创建文章
-  createArticle: (type_id, content, online, litpic) => {
+  createArticle: (type_id, content, online, tuijian, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -567,10 +567,11 @@ const api = {
     let data = {
       uuid: store.state.uuid,
       user_id: store.state.uuid,
-      writer: store.state.username,
+      writer: store.state.userInfo.username,
       type_id: type_id,
       content: content,
       online: online,
+      tuijian: tuijian,
       litpic: litpic
     };
     data = JSON.stringify(data);
@@ -578,13 +579,13 @@ const api = {
       s: "App.Table.CheckCreateOrUpdate",
       model_name: "yesapi_fl_article",
       data: data,
-      check_field: "type_id, content, litpic"
+      check_field: "type_id,content"
     });
   },
   //精确取文章
   getArticle: id => {
     return axios.post("/", {
-      s: "App.Table.FreeDelete",
+      s: "App.Table.Get",
       model_name: "yesapi_fl_article",
       logic: "or",
       id: id
@@ -596,13 +597,13 @@ const api = {
     if (online || online == 0) {
       where.push("online=" + online);
     }
-    if(type_id){
+    if (type_id) {
       where.push("type_id=" + type_id);
     }
-    if(!order){
+    if (!order) {
       order = "id"
     }
-    console.log(type_id+"-"+online+"-"+order)
+    console.log(type_id + "-" + online + "-" + order)
     return axios.post("/", {
       s: "App.Table.FreeQuery",
       model_name: "yesapi_fl_article",
@@ -613,7 +614,7 @@ const api = {
     });
   },
   //修改文章
-  articleChange: (id, type_id, content,online, litpic) => {
+  articleChange: (id, type_id, content, online, tuijian, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
@@ -622,6 +623,7 @@ const api = {
       type_id: type_id,
       content: content,
       online: online,
+      tuijian: tuijian,
       litpic: litpic
     };
     data = JSON.stringify(data);
@@ -632,39 +634,39 @@ const api = {
       data: data
     });
   },
-    //文章上线、下线
-    articleOnlineChange: (id, online) => {
-      let check = checkLogin;
-      if (!check) {
-        return Promise.reject("请登录后再操作")
-      }
-      let data = {
-        online: online
-      };
-      data = JSON.stringify(data);
-      return axios.post("/", {
-        s: "App.Table.Update",
-        model_name: "yesapi_fl_article",
-        id: id,
-        data: data
-      });
-    },
-  //删除文章
-  deletearticle: id => {
+  //文章上线、下线
+  articleOnlineChange: (id, online) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
     }
-    let where = ["id=" + id];
-      for (let i = 0; i < id.length; i++) {
-        where.push("id=" + id[i]);
-      }
-      return axios.post("/", {
-        s: "App.Table.FreeDelete",
-        model_name: "yesapi_fl_article",
-        logic: "or",
-        where: where
-      });
+    let data = {
+      online: online
+    };
+    data = JSON.stringify(data);
+    return axios.post("/", {
+      s: "App.Table.Update",
+      model_name: "yesapi_fl_article",
+      id: id,
+      data: data
+    });
+  },
+  //删除文章
+  deletearticle: (...id) => {
+    let check = checkLogin;
+    if (!check) {
+      return Promise.reject("请登录后再操作")
+    }
+    let where = [];
+    for (let i = 0; i < id.length; i++) {
+      where.push("id=" + id[i]);
+    }
+    return axios.post("/", {
+      s: "App.Table.FreeDelete",
+      model_name: "yesapi_fl_article",
+      logic: "or",
+      where: where
+    });
     // //删文章表
     // function deleteMyArticle() {
     //   let where = ["id=" + id];

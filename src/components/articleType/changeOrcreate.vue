@@ -60,9 +60,9 @@ export default {
   },
   mixins: [changeOrcreateMixins],
   data() {
-    var passwordReg = /^[1-9][0-9]*$/;
+    var myReg = /^[1-9][0-9]*$/;
     var listorderValidator = (rule, value, callback) => {
-      if (!passwordReg.test(value) || value > 50) {
+      if (!myReg.test(value) || value > 50) {
         return callback(new Error("请填写50以内正整数!!"));
       }
       callback();
@@ -73,7 +73,7 @@ export default {
       total: 0,
       form: {
         litpic: "",
-        listorder: 50,
+        listorder: "",
         type_name: ""
       },
       formRules: {

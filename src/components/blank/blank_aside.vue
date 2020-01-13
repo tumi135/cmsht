@@ -21,6 +21,7 @@
       <el-menu-item index="index">xxxx</el-menu-item>
       <el-menu-item index="articleType">文章分类</el-menu-item>
       <el-menu-item index="article">文章列表</el-menu-item>
+      <el-menu-item index="createArticle">创建文章</el-menu-item>
       <el-menu-item index="commentList">评论列表</el-menu-item>
   </el-submenu>
 </el-menu>
