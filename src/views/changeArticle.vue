@@ -9,28 +9,40 @@
 export default {
   data() {
     return {
-      changeInfo: {}
+      changeInfo: {},
+      articleId: ""
     };
   },
   async created() {
-    this.initData();
+    this.articleId = this.$route.query.articleId;
   },
   methods: {
     async initData() {
       this.fullscreenLoading = true;
 
-      let datas = await this.$api
-        .getArticle(this.$route.query.articleId)
-        .catch(err => {
-          console.log(err);
-          this.$message.error("数据获取失败");
-          return "";
-        });
+      let datas = await this.$api.getArticle(this.articleId).catch(err => {
+        console.log(err);
+        this.$message.error("数据获取失败");
+        return "";
+      });
 
       this.changeInfo = datas.data.data || {};
-      console.log(this.changeInfo);
       this.fullscreenLoading = false;
     }
+  },
+  watch: {
+    articleId: function() {
+      this.initData();
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.articleId = to.query.articleId;
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.articleId = to.query.articleId;
+    next();
   },
   components: {
     changeOrcreate: () => import("../components/article/changeOrcreate")

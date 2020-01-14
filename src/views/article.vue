@@ -61,23 +61,22 @@
         </template>
       </el-table-column>
       <el-table-column prop="content" label="内容" width="180">
-          <template slot-scope="scope">
-            <el-popover placement="top-start" width="250" trigger="hover" >
-              <div>{{scope.row.content}}</div>
-                <span slot="reference">{{ scope.row.content.substr(0,30)+'...' }}</span>
-            </el-popover>
-          </template>
-    </el-table-column>
+        <template slot-scope="scope">
+          <el-popover placement="top-start" width="250" trigger="hover">
+            <div>{{scope.row.content}}</div>
+            <span slot="reference">{{ scope.row.content.substr(0,30)+'...' }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="tuijian" label="推荐等级" width="60"></el-table-column>
       <el-table-column prop="praise_num" label="点赞数" width="80"></el-table-column>
       <el-table-column prop="comment_num" label="评论数" width="80">
         <template slot-scope="scope">
           <router-link
-           class="toCommentList"
+            class="toCommentList"
             v-if="scope.row.comment_num != 0"
             :to="{ name: 'commentList', query: { articleId: scope.row.id } }"
-            >{{ scope.row.comment_num }}</router-link
-          >
+          >{{ scope.row.comment_num }}</router-link>
           <span v-else>{{scope.row.comment_num}}</span>
         </template>
       </el-table-column>
@@ -98,19 +97,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- <change-orcreate
-      type="change"
-      :dialog-form-visible="changeDialog"
-      @closeDialog="closeDialogs"
-      :info="changeInfo"
-    /> -->
-    <!--创建窗口-->
-    <!-- <change-orcreate
-      type="create"
-      :dialog-form-visible="createDialog"
-      @closeDialog="closeDialogs"
-      :my-total="total"
-    /> -->
     <el-pagination
       layout="prev, pager, next, jumper"
       background
@@ -186,13 +172,7 @@ export default {
           ? this.searchform.online
           : null;
       let datas = await this.$api
-        .articleFreeQuery(
-          this.page,
-          this.pageSize,
-          type_id,
-          online,
-          order
-        )
+        .articleFreeQuery(this.page, this.pageSize, type_id, online, order)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
@@ -247,33 +227,44 @@ export default {
           this.$message.error("数据获取失败");
           return "";
         });
-      if (
-        deletearticle.ret == 200 &&
-        deletearticle.data.err_code == 0
-      ) {
+      if (deletearticle.ret == 200 && deletearticle.data.err_code == 0) {
         this.$router.go(0);
       }
     },
-    toCraeteOrChange: function(val, id){
-      if(val == 'change'){
-        this.$router.push({name:"changeArticle",query:{articleId: id}})
-      } else if(val == 'create'){
-        this.$router.push({name:"createArticle"})
+    toCraeteOrChange: function(val, id) {
+      if (val == "change") {
+        this.$router.push({ name: "changeArticle", query: { articleId: id } });
+      } else if (val == "create") {
+        this.$router.push({ name: "createArticle" });
       }
-
     },
     fiterType: function(value) {
       let type = this.typeList.find(item => {
         return value == item.id;
       });
-      if(type){
-        return type.type_name
+      if (type) {
+        return type.type_name;
       } else {
-        return "-"
+        return "-";
       }
     }
+  },
+  watch: {
+    $router: function() {
+      this.initTypeList();
+      this.initData();
+    }
   }
-  
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     if (from.name == "createArticle" || from.name == "articleType") {
+  //       vm.initTypeList();
+  //       vm.initData();
+  //     }
+  //     console.log(from);
+  //     console.log(vm);
+  //   });
+  // }
 };
 </script>
 <style>
@@ -308,7 +299,7 @@ export default {
   width: 80px;
   max-height: 80px;
 }
-.toCommentList{
+.toCommentList {
   color: #0080ff;
   text-decoration: none;
 }

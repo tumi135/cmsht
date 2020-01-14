@@ -603,7 +603,6 @@ const api = {
     if (!order) {
       order = "id"
     }
-    console.log(type_id + "-" + online + "-" + order)
     return axios.post("/", {
       s: "App.Table.FreeQuery",
       model_name: "yesapi_fl_article",
@@ -746,8 +745,14 @@ const api = {
     return axios.all([createMyComment(), changeArticle()]);
   },
   //评论分页查询列表数据接口(主题全部)
-  commentsFreeQuery: (page, perpage, tid) => {
-    let where = ["id>0", "tid=" + tid];
+  commentsFreeQuery: (page, perpage, tid, create_name) => {
+    let where = ["id>0"];
+    if (tid) {
+      where.push("tid=" + tid);
+    }
+    if (create_name) {
+      where.push("create_name='" + create_name + "'");
+    }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
       model_name: "yesapi_ann_blog_comment",
@@ -779,17 +784,18 @@ const api = {
     });
   },
   //删除评论
-  deleteComment: (tid, ...id) => {
+  deleteComment: (tid, id) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
     }
 
     function deleteComments() {
-      let where = [];
-      for (let i = 0; i < id.length; i++) {
-        where.push("id=" + id[i]);
-      }
+      let where = ["id=" + id];
+      // for (let i = 0; i < id.length; i++) {
+      //   where.push("id=" + id[i]);
+      // }
+
       return axios.post("/", {
         s: "App.Table.FreeDelete",
         model_name: "yesapi_ann_blog_comment",
@@ -804,7 +810,7 @@ const api = {
         model_name: "yesapi_fl_article",
         id: tid,
         change_field: "comment_num",
-        change_value: -id.length
+        change_value: -1
       });
     }
     return axios.all([deleteComments(), changeArticle()]);

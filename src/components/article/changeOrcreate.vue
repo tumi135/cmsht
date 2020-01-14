@@ -267,6 +267,9 @@ export default {
         tuijian: this.info.tuijian,
         online: this.info.online == 0 ? true : false
       };
+    },
+    $router(){
+      this.initTypeList();
     }
   }
 };
