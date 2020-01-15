@@ -12,7 +12,7 @@ axios.interceptors.request.use(
     if (config.data.token) {
       config.data.token = storages.sessionGet("token");
     }
-    if (config.data.uuid) {
+    if (config.data.uuid == true) {
       config.data.uuid = storages.sessionGet("uuid");
     }
     if (config.data.admin_token) {

@@ -20,6 +20,8 @@ const Aarticle = () => import("../views/article");
 const CreateArticle = () => import("../views/createArticle");
 const ChangeArticle = () => import("../views/changeArticle");
 const CommentList = () => import("../views/commentList");
+const FeedbackTips = () => import("../views/feedbackTips");
+const FeedbackList = () => import("../views/feedbackList");
 
 Vue.use(VueRouter);
 
@@ -135,6 +137,24 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['文章管理', '评论列表']
+        }
+      },
+      {
+        path: "feedbackTips",
+        name: "feedbackTips",
+        component: FeedbackTips,
+        meta: {
+          requireAuth: true,
+          routerName: ['意见反馈', '意见反馈告示']
+        }
+      },
+      {
+        path: "feedbackList",
+        name: "feedbackList",
+        component: FeedbackList,
+        meta: {
+          requireAuth: true,
+          routerName: ['意见反馈', '意见反馈列表']
         }
       }
     ]

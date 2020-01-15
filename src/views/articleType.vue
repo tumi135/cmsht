@@ -73,7 +73,6 @@ export default {
   },
   mixins: [tableMixins],
   created() {
-    console.log(this.$route)
     this.initData();
   },
   methods: {

@@ -24,6 +24,14 @@
       <el-menu-item index="createArticle">创建文章</el-menu-item>
       <el-menu-item index="commentList">评论列表</el-menu-item>
   </el-submenu>
+  <el-submenu index="4">
+    <template slot="title">
+      <i class="el-icon-chat-dot-round"></i>
+      <span slot="title">意见反馈</span>
+    </template>
+      <el-menu-item index="feedbackTips">意见反馈告示</el-menu-item>
+      <el-menu-item index="feedbackList">意见反馈列表</el-menu-item>
+  </el-submenu>
 </el-menu>
 </template>
 
