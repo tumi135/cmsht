@@ -853,28 +853,32 @@ const api = {
     });
   },
   //创建意见反馈
-  createFeedback: (title, content) => {
+  createFeedback: (content, r_name, litpic) => {
     let check = checkLogin;
     if (!check) {
       return Promise.reject("请登录后再操作")
     }
     let data = {
-      uuid: store.state.uuid,
-      user_name: store.state.username,
-      title: title,
-      content: content
+      uid: store.state.uuid,
+      user_name: store.state.userInfo.username,
+      r_name: r_name,
+      content: content,
+      litpic: litpic
     };
     data = JSON.stringify(data);
     return axios.post("/", {
       s: "App.Table.CheckCreateOrUpdate",
       model_name: "yesapi_fl_feedback",
       data: data,
-      check_field: "title,content"
+      check_field: "content"
     });
   },
   //意见反馈分页查询列表数据接口
-  feedbackFreeQuery: (page, perpage) => {
+  feedbackFreeQuery: (page, perpage, user_name) => {
     let where = ["id>0"];
+    if (user_name) {
+      where.push("user_name='" + user_name + "'")
+    }
     return axios.post("/", {
       s: "App.Table.FreeQuery",
       model_name: "yesapi_fl_feedback",

@@ -40,30 +40,53 @@
     >
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="tid" label="评论的文章ID" width="80"></el-table-column>
-      <el-table-column prop="create_name" label="评论人" width="80"></el-table-column>
-      <el-table-column prop="content" label="评论内容" width="180">
+      <el-table-column
+        prop="tid"
+        label="评论的文章ID"
+        width="80"
+      ></el-table-column>
+      <el-table-column
+        prop="create_name"
+        label="评论人"
+        width="80"
+      ></el-table-column>
+      <el-table-column prop="content" label="评论内容" width="280">
         <template slot-scope="scope">
-          <el-popover placement="top-start" width="250" trigger="hover">
-            <div>{{scope.row.content}}</div>
-            <span slot="reference">{{ scope.row.content.substr(0,20)+'...' }}</span>
+          <el-popover
+            placement="top-start"
+            width="250"
+            trigger="hover"
+            :content="scope.row.content"
+          >
+            <div class="content-cell" slot="reference">
+              {{ scope.row.content }}
+            </div>
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="add_time" label="创建时间" width="110"></el-table-column>
+      <el-table-column
+        prop="add_time"
+        label="创建时间"
+        width="110"
+      ></el-table-column>
       <el-table-column prop="rid" label="被回复的评论ID" width="80">
         <template slot-scope="scope">
-          <span>{{scope.row.rid || "-" }}</span>
+          <span>{{ scope.row.rid || "-" }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="rid" label="被回复的评论ID" width="80">
+      <el-table-column prop="r_name" label="被回复的人" width="80">
         <template slot-scope="scope">
-          <span>{{scope.row.rid || "-" }}</span>
+          <span>{{ scope.row.r_name || "-" }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row.id,scope.row.tid)">删除</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.row.id, scope.row.tid)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -142,7 +165,6 @@ export default {
     },
     //删除选中的
     async handleDelete(deleteId, deleteTid) {
-
       let deleteRes = await this.$api
         .deleteComment(deleteTid, deleteId)
         .catch(err => {
@@ -150,10 +172,15 @@ export default {
           this.$message.error("数据获取失败");
           return "";
         });
-        console.log(deleteRes)
-      if (deleteRes[0].ret == 200 && deleteRes[0].data.err_code == 0&&deleteRes[1].ret == 200 && deleteRes[1].data.err_code == 0) {
+      console.log(deleteRes);
+      if (
+        deleteRes[0].ret == 200 &&
+        deleteRes[0].data.err_code == 0 &&
+        deleteRes[1].ret == 200 &&
+        deleteRes[1].data.err_code == 0
+      ) {
         this.$message.success("删除评论成功");
-      }else{
+      } else {
         this.$message.error("删除评论出错");
       }
       this.$router.go(0);
@@ -205,5 +232,11 @@ export default {
 .banner-item {
   width: 160px;
   max-height: 160px;
+}
+.content-cell {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

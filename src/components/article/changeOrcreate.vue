@@ -150,7 +150,7 @@ export default {
             url: myImg.data.url,
             name: "article_type"
           });
-          that.hideUploadEdit = fileList.length >= 2;
+          that.hideUploadEdit = fileList.length >= 9;
         } else {
           that.$message({
             message: "图片上传失败,刷新或换图片！",

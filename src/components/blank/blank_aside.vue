@@ -32,6 +32,13 @@
       <el-menu-item index="feedbackTips">意见反馈告示</el-menu-item>
       <el-menu-item index="feedbackList">意见反馈列表</el-menu-item>
   </el-submenu>
+  <el-submenu index="5">
+    <template slot="title">
+      <i class="el-icon-s-custom"></i>
+      <span slot="title">用户管理</span>
+    </template>
+      <el-menu-item index="userList">用户列表</el-menu-item>
+  </el-submenu>
 </el-menu>
 </template>
 

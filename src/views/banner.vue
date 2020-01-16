@@ -245,11 +245,6 @@ export default {
   }
 };
 </script>
-<style>
-/* .my-cells>.cell{
-  text-align: center;
-} */
-</style>
 
 <style scoped>
 .searchTitle {

@@ -62,9 +62,8 @@
       </el-table-column>
       <el-table-column prop="content" label="内容" width="180">
         <template slot-scope="scope">
-          <el-popover placement="top-start" width="250" trigger="hover">
-            <div>{{scope.row.content}}</div>
-            <span slot="reference">{{ scope.row.content.substr(0,30)+'...' }}</span>
+          <el-popover placement="top-start" width="250" trigger="hover" :content="scope.row.content">
+            <div class="content-cell" slot="reference">{{ scope.row.content }}</div>
           </el-popover>
         </template>
       </el-table-column>
@@ -302,5 +301,11 @@ export default {
 .toCommentList {
   color: #0080ff;
   text-decoration: none;
+}
+.content-cell{
+  width: 100%;
+  overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
 }
 </style>

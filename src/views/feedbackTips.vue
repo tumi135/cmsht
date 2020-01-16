@@ -60,18 +60,6 @@ export default {
   },
   created() {
     this.getFeedbackTips();
-    // let vm = this;
-    // const modules = {
-    //       imageResize: {   //添加
-    //         displayStyles: {   //添加
-    //           backgroundColor: 'black',
-    //           border: 'none',
-    //           color: 'white'
-    //         },
-    //         modules: ['Resize', 'DisplaySize', 'Toolbar']   //添加
-    //       }
-    //     }
-    // vm.editorOption.modules = modules;
   },
 
   methods: {
