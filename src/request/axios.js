@@ -16,10 +16,11 @@ axios.interceptors.request.use(
       config.data.uuid = storages.sessionGet("uuid");
     }
     if (config.data.admin_token) {
-      config.data.token = storages.sessionGet("token");
+      console.log(988)
+      config.data.admin_token = storages.sessionGet("token");
     }
     if (config.data.admin_uuid) {
-      config.data.uuid = storages.sessionGet("uuid");
+      config.data.admin_uuid = storages.sessionGet("uuid");
     }
     config.data = {
       ...config.data,

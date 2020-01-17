@@ -23,6 +23,7 @@ const CommentList = () => import("../views/commentList");
 const FeedbackTips = () => import("../views/feedbackTips");
 const FeedbackList = () => import("../views/feedbackList");
 const UserList = () => import("../views/userList");
+const GetLastestLoginList = () => import("../views/getLastestLoginList");
 
 Vue.use(VueRouter);
 
@@ -165,6 +166,15 @@ const routes = [
         meta: {
           requireAuth: true,
           routerName: ['用户管理', '用户列表']
+        }
+      },
+      {
+        path: "getLastestLoginList",
+        name: "getLastestLoginList",
+        component: GetLastestLoginList,
+        meta: {
+          requireAuth: true,
+          routerName: ['用户管理', '近期登录的前20名用户']
         }
       }
     ]

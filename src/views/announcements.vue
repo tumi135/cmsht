@@ -164,7 +164,6 @@ export default {
           this.$message.error("数据获取失败");
           return "";
         });
-      console.log(datas);
       this.tableData = datas.data.list || [];
       this.total = datas.data.total;
       this.fullscreenLoading = false;

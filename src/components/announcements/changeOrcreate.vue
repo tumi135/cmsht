@@ -8,7 +8,11 @@
   >
     <el-form :model="form" label-width="80px" ref="form" :rules="formRules">
       <el-form-item label="标题" prop="title">
-        <el-input v-model="form.title" maxlength="20" show-word-limit></el-input>
+        <el-input
+          v-model="form.title"
+          maxlength="20"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item label="起始时间">
         <el-date-picker
@@ -31,16 +35,21 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="上架">
-        <el-switch v-model="form.online" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+        <el-switch
+          v-model="form.online"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        ></el-switch>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button @click="closeDialog">取 消</el-button>
       <el-button
         type="primary"
         @click="submitForm"
         v-loading.fullscreen.lock="fullscreenLoading"
-      >确 定</el-button>
+        >确 定</el-button
+      >
     </div>
   </el-dialog>
 </template>
@@ -54,7 +63,7 @@ export default {
     dialogFormVisible: Boolean,
     info: Object
   },
-    mixins: [changeOrcreateMixins],
+  mixins: [changeOrcreateMixins],
   data() {
     return {
       fullscreenLoading: false,
@@ -134,9 +143,11 @@ export default {
   },
   watch: {
     info() {
-      let strTime = new Date(Date.parse(this.info.start_time.replace(/-/g,  "/")));
-      let endTime = new Date(Date.parse(this.info.end_time.replace(/-/g,  "/")));
-      let date = [strTime,endTime];
+      let strTime = new Date(
+        Date.parse(this.info.start_time.replace(/-/g, "/"))
+      );
+      let endTime = new Date(Date.parse(this.info.end_time.replace(/-/g, "/")));
+      let date = [strTime, endTime];
       this.id = this.info.id;
       this.form = {
         title: this.info.title,

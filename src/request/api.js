@@ -87,13 +87,18 @@ const api = {
     });
   },
   //获取会员列表接口
-  userGetList: (uuids, page, perpage, sort_type, role) => {
+  userGetList: (page, perpage) => {
     return axios.post("/", {
       s: "App.User.GetList",
       page: page,
-      perpage: perpage,
-      sort_type: sort_type,
-      role: role
+      perpage: perpage
+    });
+  },
+  //获取最近会员登录列表
+  getLastestLoginList:  () => {
+    return axios.post("/", {
+      s: "App.User.GetLastestLoginList",
+      num: 20
     });
   },
   //获取会员个人资料接口

@@ -22,7 +22,7 @@
           placeholder="50以内正整数，数字越小越靠后"
         ></el-input>
       </el-form-item>
-      <el-form-item label="上传图片" prop="pic">
+      <el-form-item label="上传图片" prop="litpic">
         <el-upload
           ref="upload"
           class="my-uploader"
@@ -38,7 +38,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button @click="closeDialog">取 消</el-button>
       <el-button
         type="primary"
         @click="submitForm"
@@ -120,7 +120,7 @@ export default {
             tips = "取消操作";
           });
         return tips;
-      } else if (this.myTotal >= 11) {
+      } else if (this.myTotal >= 30) {
         await this.$alert(
           "文章分类已有30种, 请删除不需要的分类后再添加",
           "提示",

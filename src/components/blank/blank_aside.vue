@@ -18,7 +18,6 @@
       <i class="el-icon-notebook-1"></i>
       <span slot="title">文章管理</span>
     </template>
-      <el-menu-item index="index">xxxx</el-menu-item>
       <el-menu-item index="articleType">文章分类</el-menu-item>
       <el-menu-item index="article">文章列表</el-menu-item>
       <el-menu-item index="createArticle">创建文章</el-menu-item>
@@ -38,6 +37,7 @@
       <span slot="title">用户管理</span>
     </template>
       <el-menu-item index="userList">用户列表</el-menu-item>
+      <el-menu-item index="getLastestLoginList">近期登录的前20名用户</el-menu-item>
   </el-submenu>
 </el-menu>
 </template>

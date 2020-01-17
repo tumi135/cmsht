@@ -114,10 +114,8 @@ export default {
         item.litpic = JSON.parse(item.litpic);
         return item;
       });
-      console.log(data);
       this.total = datas.data.total;
       this.tableData = dataList;
-      console.log(this.tableData);
 
       this.fullscreenLoading = false;
     },
