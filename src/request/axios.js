@@ -4,7 +4,7 @@ import qs from "qs";
 import storages from "../my_config/storages";
 
 // request拦截器
-axios.defaults.baseURL = "http://hn216.api.yesapi.cn";
+axios.defaults.baseURL = "https://hn216.api.yesapi.cn";
 axios.defaults.timeout = 6000;
 axios.interceptors.request.use(
   config => {
@@ -16,7 +16,7 @@ axios.interceptors.request.use(
       config.data.uuid = storages.sessionGet("uuid");
     }
     if (config.data.admin_token) {
-      console.log(988)
+      console.log(988);
       config.data.admin_token = storages.sessionGet("token");
     }
     if (config.data.admin_uuid) {
