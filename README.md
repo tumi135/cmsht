@@ -34,7 +34,7 @@ http://open.yesapi.cn/?r=user/registration&from=tumi123
 <img src="https://dcdn.it120.cc/2020/01/20/5397fbd4-6fd7-4bbe-b6f8-04e74dd25cf7.PNG" width="200"/>
 <img src="https://dcdn.it120.cc/2020/01/20/0f48c85f-2572-4d99-9b22-94e9240c36d7.PNG" width="200"/>
 
-![这里随便写文字](https://dcdn.it120.cc/2020/01/20/0f48c85f-2572-4d99-9b22-94e9240c36d7.PNG)
+![这里随便写文字](https://github.com/tumi135/cmsht/blob/master/src/assets/images/cat.png)
 
 # cms_ht
 
