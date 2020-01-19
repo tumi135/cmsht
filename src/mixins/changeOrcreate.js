@@ -64,6 +64,11 @@ export const changeOrcreateMixins = {
               type: "success"
             });
             this.$router.go(0);
+          } else if (res.ret == 200 && res.data.err_code == 1){
+            this.$message({
+              message: "你不是管理员，无权限操作!",
+              type: "warning"
+            });
           } else if (res == "请登录后再操作") {
             this.$message({
               message: "请登录后再操作!",

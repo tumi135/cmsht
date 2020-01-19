@@ -89,11 +89,6 @@ export default {
     }
   },
   watch: {
-    // info() {
-    //   if(this.info == this.$store.state.userInfo.username){
-    //     this.$router.push({name:'changePassword'})
-    //   }
-    // }
   }
 };
 </script>
