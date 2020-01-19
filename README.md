@@ -33,8 +33,7 @@ http://open.yesapi.cn/?r=user/registration&from=tumi123
 <img src="https://dcdn.it120.cc/2020/01/20/5cf9ad52-df0b-41a2-ba05-74338fd15728.PNG" width="200"/>
 <img src="https://dcdn.it120.cc/2020/01/20/5397fbd4-6fd7-4bbe-b6f8-04e74dd25cf7.PNG" width="200"/>
 <img src="https://dcdn.it120.cc/2020/01/20/0f48c85f-2572-4d99-9b22-94e9240c36d7.PNG" width="200"/>
-
-![这里随便写文字](https://github.com/tumi135/cmsht/blob/master/src/assets/images/cat.png)
+<img src="http://cd7.yesapi.net/C6FB2E902F9FDA74101B4887AF935333_20200119230948_d304479888f45d98332985ecdbbfcef6.jpeg" />
 
 # cms_ht
 
