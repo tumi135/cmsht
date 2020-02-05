@@ -10,7 +10,7 @@
       <el-form-item label="标题(只读)" prop="image_title" >
         <el-input v-model="form.image_title" maxlength="10" show-word-limit readonly></el-input>
       </el-form-item>
-      <el-form-item label="上传图片" prop="image_link">
+      <el-form-item label="上传图片" prop="litpic">
         <el-upload
           ref="upload"
           class="my-uploader"
@@ -20,7 +20,7 @@
           :on-change="uploaderImg"
           accept=".jpg, .jpeg, .png, .gif, .bmp, .pdf, .JPG, .JPEG, .PBG, .GIF, .BMP, .PDF"
         >
-          <img v-if="form.image_link" :src="form.image_link" class="uploaderImg" />
+          <img v-if="form.litpic" :src="form.litpic" class="uploaderImg" />
           <i v-else class="el-icon-plus my-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -61,14 +61,14 @@ export default {
       id: "",
       form: {
         image_title: "官方",
-        image_link: "",
+        litpic: "",
         image_desc: null
       },
       formRules: {
         image_title: [
           { required: true, message: "请填写标题", trigger: "blur" }
         ],
-        image_link: [
+        litpic: [
           { required: true, message: "请上传图片", trigger: "blur" }
         ],
         image_desc: [{ required: true, message: "请填写描述", trigger: "blur" }]
@@ -84,7 +84,7 @@ export default {
         .funnyImgChange(
           this.id,
           this.form.image_title,
-          this.form.image_link,
+          this.form.litpic,
           this.form.image_desc
         )
         .catch(err => {
@@ -96,7 +96,7 @@ export default {
       let res = await this.$api
         .createFunnyImg(
           this.form.image_title,
-          this.form.image_link,
+          this.form.litpic,
           this.form.image_desc
         )
         .catch(err => {
@@ -110,7 +110,7 @@ export default {
       this.id = this.info.id;
       this.form = {
         // image_title: this.info.image_title,
-        image_link: this.info.image_link,
+        litpic: this.info.image_link,
         image_desc: this.image_desc
       };
     }
