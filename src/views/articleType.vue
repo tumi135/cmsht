@@ -1,8 +1,15 @@
 <template>
   <div v-loading.fullscreen.lock="fullscreenLoading">
     <div class="control-btn-box">
-      <el-button type="danger" icon="el-icon-delete" @click="handleDelete('more')">删除趣图</el-button>
-      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true">创建趣图</el-button>
+      <el-button
+        type="danger"
+        icon="el-icon-delete"
+        @click="handleDelete('more')"
+        >删除分类</el-button
+      >
+      <el-button type="primary" icon="el-icon-edit" @click="createDialog = true"
+        >创建分类</el-button
+      >
     </div>
     <el-table
       class="content"
@@ -15,19 +22,40 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="编号" width="80"></el-table-column>
-      <el-table-column prop="type_name" label="分类名" width="180"></el-table-column>
+      <el-table-column
+        prop="type_name"
+        label="分类名"
+        width="180"
+      ></el-table-column>
       <el-table-column label="分类图标" width="180">
         <template slot-scope="scope">
           <img :src="scope.row.litpic" class="art-type-item" />
         </template>
       </el-table-column>
-      <el-table-column prop="listorder" label="排序" width="80"></el-table-column>
-      <el-table-column prop="add_time" label="创建时间" width="100"></el-table-column>
-      <el-table-column prop="create_by" label="创建者" width="100"></el-table-column>
+      <el-table-column
+        prop="listorder"
+        label="排序"
+        width="80"
+      ></el-table-column>
+      <el-table-column
+        prop="add_time"
+        label="创建时间"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="create_by"
+        label="创建者"
+        width="100"
+      ></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete('one', scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete('one', scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -78,12 +106,9 @@ export default {
   methods: {
     async initData() {
       this.fullscreenLoading = true;
-      
+
       let datas = await this.$api
-        .articleTypeFreeQuery(
-          this.page,
-          this.pageSize
-        )
+        .articleTypeFreeQuery(this.page, this.pageSize)
         .catch(err => {
           console.log(err);
           this.$message.error("数据获取失败");
@@ -122,8 +147,7 @@ export default {
     }
   },
   components: {
-    changeOrcreate: () =>
-      import("../components/articleType/changeOrcreate")
+    changeOrcreate: () => import("../components/articleType/changeOrcreate")
   }
 };
 </script>
