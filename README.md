@@ -34,6 +34,10 @@ http://open.yesapi.cn/?r=user/registration&from=tumi123
 <img src="https://dcdn.it120.cc/2020/01/20/5397fbd4-6fd7-4bbe-b6f8-04e74dd25cf7.PNG" width="400"/>  
 <img src="https://dcdn.it120.cc/2020/01/20/0f48c85f-2572-4d99-9b22-94e9240c36d7.PNG" width="400"/>
 
+### 配套移动端页面
+https://github.com/tumi135/pet-forum-vue
+预览地址 https://tumi135.github.io/pet-forum-vue/dist/index.html
+
 # cms_ht
 
 ## Project setup
